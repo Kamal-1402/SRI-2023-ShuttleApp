@@ -1,27 +1,16 @@
-# SRI-2023-ShuttleApp
-This is to Manage work done during Summer Research Internship 
+# learn_flutter
 
-## Project Description :
-The Shuttle App is a ride-sharing platform that aims to provide convenient and efficient transportation solutions to users while offering easy ride options to drivers. The app will also offer shared ride options to users, allowing them to save costs and reduce traffic congestion.
+A new Flutter project.
 
-## Technology :
+## Getting Started
 
-1. Frontend Development : Flutter
-2. Backend Development : Node.js
-3. NoSQL Database : Mongo DB
-4. Design and Ideation : Figma
+This project is a starting point for a Flutter application.
 
-## Major Features :
+A few resources to get you started if this is your first Flutter project:
 
-● Enabling auto drivers to showcase their availability and offer rides in specific areas. <br />
-● Allowing passengers to input their pick-up and drop-off locations to locate available autos nearby.<br />
-● Offering a user-friendly interface for both auto drivers and passengers<br />
-● It offers shared rides, which are suitable for passengers.<br />
-● Providing a system for verifying the identity of auto drivers and ensuring the safety of passengers.<br />
-● Cancel anytime, but according to action will be taken.<br />
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-## Team Details:
-
-- Kamal Patel 
-- Aditya Patel
-- Riki Parikh
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
