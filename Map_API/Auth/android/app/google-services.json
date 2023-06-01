@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "974053998366",
+    "project_id": "shuttleapp-1cddb",
+    "storage_bucket": "shuttleapp-1cddb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974053998366:android:2f9619a0016fb88631530f",
+        "android_client_info": {
+          "package_name": "com.example.learn_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaTAiqsu6ThBgHO58FLzGyoUz5M4wuyXk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
