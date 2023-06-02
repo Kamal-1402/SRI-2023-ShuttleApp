@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:learn_flutter/firebase_options.dart';
 import 'package:learn_flutter/views/EmailVerify.dart';
+import 'package:learn_flutter/views/HomePage.dart';
 import 'package:learn_flutter/views/MapPage.dart';
+import 'package:learn_flutter/views/ProfilePage.dart';
 import 'package:learn_flutter/views/RegisterPage.dart';
 import 'package:learn_flutter/views/loginPage.dart';
-
+import 'dart:developer' as dev show log;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
@@ -22,6 +24,9 @@ Future<void> main() async {
           "/login/": (context) => const loginPage(),
           "/register/": (context) => const RegisterPage(),
           "/login/EmailVerify/": (context) => const EmailVerify(),
+          "/Home/": (context) => const HomePage(),
+          "/Home/profile/": (context) => const ProfilePage(),
+          "/Home/MapPage/": (context) => const MapPage(),
         }),
   );
 }
@@ -59,14 +64,14 @@ class Authentication extends StatelessWidget {
               // return const loginPage();
             }
             if (CurrUser.emailVerified) {
-              print("you are verified");
-              print(CurrUser);
+              dev.log("you are verified");
+              dev.log(CurrUser.toString());
 
               // go and attach the other pages here
               return const HomePage();
             } else {
-              print("you are not email verified");
-              print(CurrUser);
+              dev.log("you are not email verified");
+              dev.log(CurrUser.toString());
 
               return Column(
                 children: [
@@ -95,68 +100,5 @@ class Authentication extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  bool showMap = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-        leading: PopupMenuButton<String>(
-          icon: Icon(Icons.menu), // Hamburger icon
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            const PopupMenuItem<String>(
-              value: 'profile',
-              child: ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
-              ),
-            ),
-            const PopupMenuItem<String>(
-              value: 'logout',
-              child: ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text('Logout'),
-              ),
-            ),
-            const PopupMenuItem<String>(
-              value: 'other',
-              child: ListTile(
-                leading: Icon(Icons.menu),
-                title: Text('Other'),
-              ),
-            ),
-          ],
-          onSelected: (String value) {
-            // Handle menu item selection here
-            if (value == 'profile') {
-              // Perform profile-related actions
-            } else if (value == 'logout') {
-              // Perform logout action
-            } else if (value == 'other') {
-              // Perform other actions
-            }
-          },
-        ),
-      ),
-      body: showMap ? MapPage() : Container(), // Conditional rendering
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            showMap = !showMap; // Toggle the flag to show/hide the map
-          });
-        },
-        child: Icon(showMap ? Icons.close : Icons.map),
-      ),
-    );
-  }
-}
 
