@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learn_flutter/views/MapPage.dart';
-import 'package:learn_flutter/views/ProfilePage.dart';
+// import 'package:learn_flutter/views/ProfilePage.dart';
 // import 'package:learn_flutter/views/ProfilePage.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

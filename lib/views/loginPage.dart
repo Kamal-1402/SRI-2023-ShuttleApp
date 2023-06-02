@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as dev show log;
 import 'package:learn_flutter/firebase_options.dart';
-import 'package:learn_flutter/views/RegisterPage.dart';
+// import 'package:learn_flutter/views/RegisterPage.dart';
 
 class loginPage extends StatefulWidget {
   const loginPage({super.key});
@@ -89,18 +90,18 @@ class _loginPageState extends State<loginPage> {
                           email: email.text,
                           password: password.text,
                         );
-                        print('user found');
-                        print(userCredential);
+                        dev.log('user found');
+                        dev.log(userCredential.toString());
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
-                          print('No user found for that email.');
+                          dev.log('No user found for that email.');
                         } else if (e.code == 'wrong-password') {
-                          print('Wrong password provided for that user.');
+                          dev.log('Wrong password provided for that user.');
                         }
                       } catch (e) {
-                        print("user not found");
-                        print(e.runtimeType);
-                        print(e);
+                        dev.log("user not found");
+                        dev.log(e.runtimeType.toString());
+                        dev.log(e.toString());
                       }
 
                       // Navigate to the second screen using a named route.

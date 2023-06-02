@@ -1,6 +1,7 @@
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as dev show log;
 // import 'package:learn_flutter/firebase_options.dart';
 // import 'package:learn_flutter/views/RegisterPage.dart';
 // import 'package:learn_flutter/views/loginPage.dart';
@@ -35,9 +36,9 @@ class _EmailVerifyState extends State<EmailVerify> {
               final CurrUser = FirebaseAuth.instance.currentUser;
               await CurrUser?.reload();
               if (CurrUser?.emailVerified ?? false) {
-                print("you are verified");
+                dev.log("you are verified");
               } else {
-                print("you are not verified");
+                dev.log("you are not verified");
               }
             },
             child: const Text("Reload"),

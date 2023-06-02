@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../firebase_options.dart';
+import 'dart:developer' as dev show log;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -88,13 +89,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           email: email.text,
                           password: password.text,
                         );
-                        print(userCredential);
+                        dev.log(userCredential.toString());
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'email-already-in-use') {
-                          print('The account already exists for that email.');
+                          dev.log('The account already exists for that email.');
                         }
                       } catch (e) {
-                        print(e);
+                        dev.log(e.toString());
                       }
 
                       // Navigate to the second screen using a named route.
