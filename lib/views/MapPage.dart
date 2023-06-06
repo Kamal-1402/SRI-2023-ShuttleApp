@@ -25,35 +25,24 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
-    ;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 33, 32, 32),
-        title: const Text('Flutter MapBox'),
+    return FlutterMap(
+      options: MapOptions(
+        minZoom: 5,
+        maxZoom: 18,
+        zoom: 13,
+        center: AppConstants.myLocation,
       ),
-      body: Stack(
-        children: [
-          FlutterMap(
-            options: MapOptions(
-              minZoom: 5,
-              maxZoom: 18,
-              zoom: 13,
-              center: AppConstants.myLocation,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate:
-                    "https://api.mapbox.com/styles/v1/isobel35ramto35/clik2cxj500al01qpe9j20u93/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A",
-                additionalOptions: const {
-                  'mapStyleId': AppConstants.mapBoxStyleId,
-                  'accessToken': AppConstants.mapBoxAccessToken,
-                },
-                userAgentPackageName: 'com.example.learn_flutter',
-              ),
-            ],
-          ),
-        ],
-      ),
+      children: [
+        TileLayer(
+          urlTemplate:
+              "https://api.mapbox.com/styles/v1/isobel35ramto35/clik2cxj500al01qpe9j20u93/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A",
+          additionalOptions: const {
+            'mapStyleId': AppConstants.mapBoxStyleId,
+            'accessToken': AppConstants.mapBoxAccessToken,
+          },
+          userAgentPackageName: 'com.example.learn_flutter',
+        ),
+      ],
     );
   }
 }

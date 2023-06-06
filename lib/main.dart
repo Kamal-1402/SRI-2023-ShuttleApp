@@ -27,8 +27,8 @@ Future<void> main() async {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           // useMaterial3: true,
         ),
-        // home: const Authentication(),
-        home: const MapPage(),
+        home: const Authentication(),
+        // home: const MapPage(),
 
         routes: {
           "/login/": (context) => const loginPage(),
