@@ -8,10 +8,18 @@ import 'package:learn_flutter/views/MapPage.dart';
 import 'package:learn_flutter/views/ProfilePage.dart';
 import 'package:learn_flutter/views/RegisterPage.dart';
 import 'package:learn_flutter/views/loginPage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer' as dev show log;
+
+
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:flutter_map/plugin_api.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
+  await DotEnv().load();
+
   runApp(
     MaterialApp(
         title: 'Flutter Demo',
@@ -19,7 +27,9 @@ Future<void> main() async {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           // useMaterial3: true,
         ),
-        home: const Authentication(),
+        // home: const Authentication(),
+        home: const MapPage(),
+
         routes: {
           "/login/": (context) => const loginPage(),
           "/register/": (context) => const RegisterPage(),
@@ -45,7 +55,7 @@ class Authentication extends StatelessWidget {
           case ConnectionState.done:
             final CurrUser = FirebaseAuth.instance.currentUser;
             if (CurrUser == null) {
-              print("user not found");
+              dev.log("user not found");
               return Column(
                 children: [
                   const Text("you are not logged in"),
@@ -100,5 +110,8 @@ class Authentication extends StatelessWidget {
   }
 }
 
+
+
+// import 'package:flutter_map/src/layer/tile_layer.dart';
 
 

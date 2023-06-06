@@ -41,6 +41,10 @@ dependencies:
   firebase_analytics: ^10.4.1
   provider: ^6.0.5
   google_maps_flutter_web: ^0.5.0
+  mapbox_gl: ^0.16.0
+  flutter_map: ^5.0.0
+  flutter_dotenv: ^5.1.0
+  latlong2: ^0.9.0
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +67,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+    - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

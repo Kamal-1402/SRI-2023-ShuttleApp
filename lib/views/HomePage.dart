@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:learn_flutter/views/MapPage.dart';
+import 'dart:developer' as dev show log;
+import 'package:firebase_auth/firebase_auth.dart';
+
+
 // import 'package:learn_flutter/views/ProfilePage.dart';
 // import 'package:learn_flutter/views/ProfilePage.dart';
 class HomePage extends StatefulWidget {
@@ -42,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ],
-          onSelected: (String value) {
+          onSelected: (String value) async{
             // Handle menu item selection here
             if (value == 'profile') {
               // Perform profile-related actions
@@ -53,7 +57,16 @@ class _HomePageState extends State<HomePage> {
               // );
             } else if (value == 'logout') {
               // Perform logout action
-            } else if (value == 'other') {
+              final shouldLogout=await showLogoutDialog(context);
+              // dev.log(shouldLogout.toString());
+              if (shouldLogout) {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/login/', (route) => false);
+              }
+            }
+
+             else if (value == 'other') {
               // Perform other actions
             }
           },
@@ -71,4 +84,30 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+Future<bool> showLogoutDialog(BuildContext context) async {
+  return showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Dismiss dialog
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Close dialog
+            },
+            child: const Text('Logout'),
+          ),
+        ],
+      );
+    },
+  ).then((value) => value ?? false);
 }
