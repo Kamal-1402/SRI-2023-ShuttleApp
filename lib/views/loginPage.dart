@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as dev show log;
 import 'package:learn_flutter/firebase_options.dart';
+import 'package:learn_flutter/views/HomePage.dart';
 // import 'package:learn_flutter/views/RegisterPage.dart';
 
 class loginPage extends StatefulWidget {
@@ -92,6 +93,11 @@ class _loginPageState extends State<loginPage> {
                         );
                         dev.log('user found');
                         dev.log(userCredential.toString());
+                        if (userCredential.user!.emailVerified) {
+                          dev.log('user verified');
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/Home/', (route) => false);
+                        }
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           dev.log('No user found for that email.');
@@ -109,12 +115,11 @@ class _loginPageState extends State<loginPage> {
                     child: const Text('login'),
                   ),
                   TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/register/',
-                            (route) => false);
-                      },
-                      child: const Text('not registered? register here'),
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/register/', (route) => false);
+                    },
+                    child: const Text('not registered? register here'),
                   ),
                 ],
               );
