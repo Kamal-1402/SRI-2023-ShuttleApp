@@ -8,6 +8,7 @@ import 'package:learn_flutter/views/MapPage.dart';
 import 'package:learn_flutter/views/ProfilePage.dart';
 import 'package:learn_flutter/views/RegisterPage.dart';
 import 'package:learn_flutter/views/loginPage.dart';
+import 'package:learn_flutter/UI/map_base.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer' as dev show log;
 
@@ -28,7 +29,7 @@ Future<void> main() async {
           // useMaterial3: true,
         ),
         home: const Authentication(),
-        // home: const MapPage(),
+        // home: MapBase(),
 
         routes: {
           "/login/": (context) => const loginPage(),
@@ -37,6 +38,7 @@ Future<void> main() async {
           "/Home/": (context) => const HomePage(),
           "/Home/profile/": (context) => const ProfilePage(),
           "/Home/MapPage/": (context) => const MapPage(),
+          // "/api/search/": (context) => MapBase(),
         }),
   );
 }

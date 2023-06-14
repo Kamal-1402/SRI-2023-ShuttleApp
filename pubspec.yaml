@@ -46,6 +46,9 @@ dependencies:
   flutter_dotenv: ^5.1.0
   latlong2: ^0.9.0
   geolocator: ^9.0.2
+  latlng: ^1.0.0
+  firebase_database: ^10.2.3
+  # http: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +73,11 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - assets/map_styles/Streets.json
+  # add json to search places 
+    - assets/map_styles/Places.json
+
+   
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
