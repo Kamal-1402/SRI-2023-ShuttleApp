@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:developer' as dev show log;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 // import 'package:latlong2/latlong.dart';
@@ -8,6 +8,11 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
+import 'package:learn_flutter/Assistants/assitantMethods.dart';
+import 'package:learn_flutter/views/searchScreen.dart';
+import 'package:provider/provider.dart';
+
+import '../DataHandler/appData.dart';
 
 class MapGoogle extends StatefulWidget {
   const MapGoogle({super.key});
@@ -24,11 +29,11 @@ class _MapGoogleState extends State<MapGoogle> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-  late double bottomPaddingOfMap=0;
+  late double bottomPaddingOfMap = 0;
   Position? _currentPosition;
-  // late final MapController _mapController;
-  // bool _isDefaultLocation = false;
-  // late StreamSubscription<geolocator.Position> _positionStreamSubscription;
+ 
+
+ 
 
   Future<bool> _determinePosition() async {
     bool serviceEnabled;
@@ -62,17 +67,25 @@ class _MapGoogleState extends State<MapGoogle> {
     if (isLocationEnabled) {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
+
       _currentPosition = position;
+
       LatLng latLngPosition = LatLng(position.latitude, position.longitude);
       CameraPosition cameraPosition =
           CameraPosition(target: latLngPosition, zoom: 14);
       newGoogleMapController!
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+      String address =
+          await AssistantMethods.searchCoordinateAddress(position, context);
+      dev.log("This is your address:: " + address);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    String pickUpLocationName = Provider.of<AppData>(context).pickUpLocation?.placeName ?? "Add Home";
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Map Google'),
@@ -93,7 +106,7 @@ class _MapGoogleState extends State<MapGoogle> {
             onMapCreated: (GoogleMapController controller) {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
-              
+
               setState(() {
                 bottomPaddingOfMap = 300.0;
               });
@@ -135,53 +148,60 @@ class _MapGoogleState extends State<MapGoogle> {
                       style: TextStyle(fontSize: 20, fontFamily: "Brand-Bold"),
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            spreadRadius: 0.5,
-                            offset: Offset(0.7, 0.7),
-                          ),
-                        ],
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.search,
-                              color: Colors.blueAccent,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => const SearchScreen()),);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              spreadRadius: 0.5,
+                              offset: Offset(0.7, 0.7),
                             ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text("Search Drop Off"),
                           ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search,
+                                color: Colors.blueAccent,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Search Drop Off"),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.home,
                           color: Colors.grey,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 12,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Add Home"),
-                            SizedBox(
+                            Text(
+                              pickUpLocationName
+                            ),
+                            const SizedBox(
                               height: 4,
                             ),
-                            Text(
+                            const Text(
                               "Your living home address",
                               style: TextStyle(
                                   fontSize: 11, color: Colors.black54),

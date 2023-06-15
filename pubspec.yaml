@@ -49,6 +49,7 @@ dependencies:
   latlng: ^1.0.0
   firebase_database: ^10.2.3
   google_maps_flutter: ^2.3.0
+  http: ^1.0.0
   # http: ^1.0.0
 
 dev_dependencies:
@@ -75,8 +76,9 @@ flutter:
   assets:
     - .env
     - assets/map_styles/Streets.json
-  # add json to search places 
     - assets/map_styles/Places.json
+    - images/pickicon.png
+    - images/desticon.png
 
    
   # To add assets to your application, add an assets section, like this:
