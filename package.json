@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@mapbox/mapbox-gl-style-spec": "^13.28.0",
+    "firebase": "^9.22.2",
     "mapbox-gl": "^2.15.0"
   }
 }

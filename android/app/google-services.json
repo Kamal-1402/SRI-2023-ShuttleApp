@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "974053998366",
-    "project_id": "shuttleapp-1cddb",
-    "storage_bucket": "shuttleapp-1cddb.appspot.com"
+    "project_number": "861632027209",
+    "project_id": "appshuttle-12d39",
+    "storage_bucket": "appshuttle-12d39.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:974053998366:android:2f9619a0016fb88631530f",
+        "mobilesdk_app_id": "1:861632027209:android:324128d7d7ac6f17157d98",
         "android_client_info": {
           "package_name": "com.example.learn_flutter"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "861632027209-j3q211s3itt9vnl8c983f0bjf11ekgvs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAaTAiqsu6ThBgHO58FLzGyoUz5M4wuyXk"
+          "current_key": "AIzaSyCplMNadl9rrBQuY6QdCViRRVRqB3mxfzI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861632027209-j3q211s3itt9vnl8c983f0bjf11ekgvs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

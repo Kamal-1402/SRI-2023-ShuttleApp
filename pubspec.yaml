@@ -48,6 +48,7 @@ dependencies:
   geolocator: ^9.0.2
   latlng: ^1.0.0
   firebase_database: ^10.2.3
+  google_maps_flutter: ^2.3.0
   # http: ^1.0.0
 
 dev_dependencies:

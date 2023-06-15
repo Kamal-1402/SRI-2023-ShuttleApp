@@ -6,7 +6,6 @@ import 'dart:developer' as dev show log;
 // import 'package:learn_flutter/views/RegisterPage.dart';
 // import 'package:learn_flutter/views/loginPage.dart';
 
-
 class EmailVerify extends StatefulWidget {
   const EmailVerify({super.key});
 
@@ -28,6 +27,7 @@ class _EmailVerifyState extends State<EmailVerify> {
             onPressed: () async {
               final CurrUser = FirebaseAuth.instance.currentUser;
               await CurrUser?.sendEmailVerification();
+              dev.log("Email Sent");
             },
             child: const Text("Send Email"),
           ),

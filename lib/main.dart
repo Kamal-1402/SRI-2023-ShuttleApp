@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:learn_flutter/firebase_options.dart';
 import 'package:learn_flutter/views/EmailVerify.dart';
 import 'package:learn_flutter/views/HomePage.dart';
+import 'package:learn_flutter/views/MapGoogle.dart';
 import 'package:learn_flutter/views/MapPage.dart';
 import 'package:learn_flutter/views/ProfilePage.dart';
 import 'package:learn_flutter/views/RegisterPage.dart';
@@ -18,7 +19,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/plugin_api.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   await DotEnv().load();
 
   runApp(
@@ -28,7 +29,10 @@ Future<void> main() async {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           // useMaterial3: true,
         ),
-        home: const Authentication(),
+        // home: const Authentication(),
+        // home:const EmailVerify(),
+        // home:const HomePage(),
+        home: const MapGoogle(),
         // home: MapBase(),
 
         routes: {
@@ -39,6 +43,7 @@ Future<void> main() async {
           "/Home/profile/": (context) => const ProfilePage(),
           "/Home/MapPage/": (context) => const MapPage(),
           // "/api/search/": (context) => MapBase(),
+          "/Home/MapGoogle/": (context) => const MapGoogle(),
         }),
   );
 }
