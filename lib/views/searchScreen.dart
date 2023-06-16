@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
 import 'package:provider/provider.dart';
+
 import 'dart:developer' as dev show log;
 
 import '../Assistants/requestAssitant.dart';
 import '../DataHandler/appData.dart';
+import '../Models/address.dart';
 import '../Models/placePredictions.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -153,23 +155,29 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
 
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           // tile for predictions
           (placePredictionList.isNotEmpty)
-          ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: ListView.separated(
-              padding:const EdgeInsets.all(0),
-              itemBuilder: (context, index){
-                return PredictionTile(placePredictions: placePredictionList[index],);
-              }, 
-              separatorBuilder: (BuildContext context, int index) =>const HorizontalLine(), 
-              itemCount: placePredictionList.length, 
-              shrinkWrap: true, 
-              physics:const ClampingScrollPhysics(),
-            ),
-          )
-          : Container(),
+              ? Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(0),
+                    itemBuilder: (context, index) {
+                      return PredictionTile(
+                        placePredictions: placePredictionList[index],
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const HorizontalLine(),
+                    itemCount: placePredictionList.length,
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -201,33 +209,107 @@ class _SearchScreenState extends State<SearchScreen> {
 class PredictionTile extends StatelessWidget {
   final PlacePredictions placePredictions;
   const PredictionTile({super.key, required this.placePredictions});
-  
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child:Column(
+    return TextButton(
+      // padding: const EdgeInsets.all(0),
+      style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(0))),
+      onPressed: () {
+        getPlaceAddressDetails(
+            placePredictions.placeId ?? "getPlaceAddressDetails not found",
+            context);
+      },
+      child: Container(
+          child: Column(
         children: [
-          const SizedBox(height: 10,),
-        Row(
-          children: [
-            const Icon(Icons.add_location),
-            const SizedBox(width: 14,),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(placePredictions.mainText ??  "mainText not found",overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16),),
-                  const SizedBox(height: 8,),
-                  Text(placePredictions.secondaryText ?? "secondaryText is not found", overflow: TextOverflow.ellipsis,style: const TextStyle(fontSize: 12, color: Colors.grey),),  
-            
-                ],
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              const Icon(Icons.add_location),
+              const SizedBox(
+                width: 14,
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      placePredictions.mainText ?? "mainText not found",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      placePredictions.secondaryText ??
+                          "secondaryText is not found",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
         ],
-      )
+      )),
     );
+  }
+
+  void getPlaceAddressDetails(String placeId, context) async {
+    showDialog(
+        context: context,
+        builder: (builder) => ProgressDialog(
+              message: "Setting Drop Off, Please wait...",
+            ));
+    String placeDetai1sUr1 =
+        "https://maps.googleapis.com/maps/api/place/details/json?place id=$placeId&key=$dotenv.env['mapkey']";
+
+    var res = await RequestAssistant.getRequest(placeDetai1sUr1);
+
+    Navigator.pop(context);
+
+    if (res == "failed") return;
+
+    if (res["status"] == "OK") {
+      Address address = Address();
+      address.placeName = res["result"]["name"];
+      address.placeId = placeId;
+      address.latitude = res["result"]["geometry"]["location"]["lat"];
+      address.longitude = res["result"]["geometry"]["location"]["lng"];
+
+      Provider.of<AppData>(context, listen: false)
+          .updateUserDropOffLocationPlaceName(address);
+      dev.log("This is drop off location :: ");
+      dev.log(address.placeName.toString());
+
+      Navigator.pop(context, "obtainDirection");
+    }
+
+//     void getPIaceAddressDetaiIs(String placeld) async
+// String placeDetai1sUr1 =
+// "https://maps.googleapis.com/maps/api/place/details/json?place id=$p1aceId&key=$mapKey";
+// var res = await RequestAssistant.getRequest(p1aceDetai1sUr1);
+// if(res "failed")
+// return;
+// "0K")
+// Address();
+// Address
+// address =
+// address. placeName = rest "result"] ["name"];
+// address. placeld = placeld;
+// address.
+// latitude = rest "result"] ["geometry"] ["location"] ["lat"];
+// address. longitude = rest "result"]
+//   }
+    /////////
   }
 }

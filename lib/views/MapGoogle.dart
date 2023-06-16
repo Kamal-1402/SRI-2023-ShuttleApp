@@ -31,9 +31,6 @@ class _MapGoogleState extends State<MapGoogle> {
   );
   late double bottomPaddingOfMap = 0;
   Position? _currentPosition;
- 
-
- 
 
   Future<bool> _determinePosition() async {
     bool serviceEnabled;
@@ -84,7 +81,8 @@ class _MapGoogleState extends State<MapGoogle> {
 
   @override
   Widget build(BuildContext context) {
-    String pickUpLocationName = Provider.of<AppData>(context).pickUpLocation?.placeName ?? "Add Home";
+    String pickUpLocationName =
+        Provider.of<AppData>(context).pickUpLocation?.placeName ?? "Add Home";
 
     return Scaffold(
       appBar: AppBar(
@@ -149,8 +147,15 @@ class _MapGoogleState extends State<MapGoogle> {
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const SearchScreen()),);
+                      onTap: () async {
+                        var res = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SearchScreen()),
+                        );
+                        if (res == "obtainDirection") {
+                          await getPlaceDirection();
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -195,9 +200,7 @@ class _MapGoogleState extends State<MapGoogle> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              pickUpLocationName
-                            ),
+                            Text(pickUpLocationName),
                             const SizedBox(
                               height: 4,
                             ),
@@ -246,5 +249,27 @@ class _MapGoogleState extends State<MapGoogle> {
         ],
       ),
     );
+  }
+
+  Future<void> getPlaceDirection() async {
+    var initialPos =
+        Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var finalPos = Provider.of<AppData>(context, listen: false).dropOffLocation;
+
+    var pickUpLatLng =
+        LatLng(initialPos.latitude ?? 0.0, initialPos.longitude ?? 0);
+    var dropOffLatLng =
+        LatLng(finalPos.latitude ?? 0.0, finalPos.longitude ?? 0);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => ProgressDialog(
+              message: "Please wait...",
+            ));
+    var details = await AssistantMethods.obtainPlaceDirectionDetails(
+        pickUpLatLng, dropOffLatLng);
+    Navigator.pop(context);
+    print("This is Encoded Points :: ");
+    print(details!.encodedPoints);
   }
 }

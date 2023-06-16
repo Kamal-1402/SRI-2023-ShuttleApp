@@ -1,19 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:learn_flutter/Models/address.dart';
 
-class AppData extends ChangeNotifier
-{
+class AppData extends ChangeNotifier {
   Address pickUpLocation = Address();
-  String? _userCurrentLocationPlaceName;
-  String? get userCurrentLocationPlaceName => _userCurrentLocationPlaceName;
-  void updateUserCurrentLocationPlaceName(String newLocationPlaceName)
-  {
-    _userCurrentLocationPlaceName = newLocationPlaceName;
+  Address dropOffLocation = Address();
+  // String? _userCurrentLocationPlaceName;
+  // String? get userCurrentLocationPlaceName => _userCurrentLocationPlaceName;
+  void updateUserDropOffLocationPlaceName(Address newDroplocation) {
+    dropOffLocation = newDroplocation;
     notifyListeners();
   }
 
-  void updatePickUpLocationAddress(Address newPickUpAddress)
-  {
+  // void updateUserCurrentLocationPlaceName(String newLocationPlaceName) {
+  //   _userCurrentLocationPlaceName = newLocationPlaceName;
+  //   notifyListeners();
+  // }
+
+  void updatePickUpLocationAddress(Address newPickUpAddress) {
     pickUpLocation = newPickUpAddress;
     notifyListeners();
   }
