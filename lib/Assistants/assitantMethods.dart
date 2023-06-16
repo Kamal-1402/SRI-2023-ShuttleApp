@@ -1,20 +1,20 @@
-import 'dart:js';
+// import 'dart:js';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:learn_flutter/Assistants/requestAssitant.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../DataHandler/appData.dart';
 import '../Models/address.dart';
+// import '../Models/configMaps.dart' as config show mapKey;
 
 class AssistantMethods {
   static Future<String> searchCoordinateAddress(
-      Position position,context) async {
+      Position position, context) async {
     String placeAddress = "";
     String st1, st2, st3, st4;
-    var mapApiKey = "AIzaSyD-4zT9Z5X2Z3QZ3X3Z3X3Z3X3Z3X3Z3X3";
     String url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapApiKey";
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$dotenv.env['mapkey']";
     var response = await RequestAssistant.getRequest(url);
 
     if (response != "failed") {
