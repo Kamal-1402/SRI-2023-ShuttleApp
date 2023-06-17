@@ -249,6 +249,7 @@ class PredictionTile extends StatelessWidget {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
+                  
                   // Text(
                   //   placePredictions.neighborhood ?? "place_formatted is not found",
                   //   overflow: TextOverflow.ellipsis,
