@@ -12,6 +12,7 @@ import 'package:learn_flutter/Assistants/assitantMethods.dart';
 import 'package:learn_flutter/views/searchScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../AllWidgets/progressDialog.dart';
 import '../DataHandler/appData.dart';
 
 class MapGoogle extends StatefulWidget {
@@ -72,7 +73,7 @@ class _MapGoogleState extends State<MapGoogle> {
           CameraPosition(target: latLngPosition, zoom: 14);
       newGoogleMapController!
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
+      dev.log("This is your position:: " + position.toString());
       String address =
           await AssistantMethods.searchCoordinateAddress(position, context);
       dev.log("This is your address:: " + address);
@@ -82,7 +83,7 @@ class _MapGoogleState extends State<MapGoogle> {
   @override
   Widget build(BuildContext context) {
     String pickUpLocationName =
-        Provider.of<AppData>(context).pickUpLocation?.placeName ?? "Add Home";
+        Provider.of<AppData>(context).pickUpLocation.placeName ?? "Add Home";
 
     return Scaffold(
       appBar: AppBar(
@@ -263,13 +264,13 @@ class _MapGoogleState extends State<MapGoogle> {
 
     showDialog(
         context: context,
-        builder: (BuildContext context) => ProgressDialog(
+        builder: (BuildContext context) =>const ProgressDialog(
               message: "Please wait...",
             ));
     var details = await AssistantMethods.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);
     Navigator.pop(context);
-    print("This is Encoded Points :: ");
-    print(details!.encodedPoints);
+    dev.log("This is Encoded Points :: ");
+    dev.log(details!.encodedPoints.toString());
   }
 }

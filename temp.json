@@ -1,0 +1,7 @@
+https://api.mapbox.com/search/searchbox/v1/suggest
+?q=kudasan
+&access_token=pk.eyJ1Ijoic2VhcmNoLW1hY2hpbmUtdXNlci0xIiwiYSI6ImNrNnJ6bDdzdzA5cnAza3F4aTVwcWxqdWEifQ.RFF7CVFKrUsZVrJsFzhRvQ
+&session_token=7a12db91-e115-4f27-a415-987d5038538e
+&language=en
+&limit=10
+&types=country%2Cregion%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory&proximity=72%2C23

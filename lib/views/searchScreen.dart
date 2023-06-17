@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'dart:developer' as dev show log;
 
+import '../AllWidgets/progressDialog.dart';
 import '../Assistants/requestAssitant.dart';
 import '../DataHandler/appData.dart';
 import '../Models/address.dart';
@@ -32,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Column(
         children: [
           Container(
-            height: 215,
+            height: 180,
             decoration: const BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -163,18 +164,21 @@ class _SearchScreenState extends State<SearchScreen> {
               ? Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(0),
-                    itemBuilder: (context, index) {
-                      return PredictionTile(
-                        placePredictions: placePredictionList[index],
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const HorizontalLine(),
-                    itemCount: placePredictionList.length,
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(0),
+                      itemBuilder: (context, index) {
+                        return PredictionTile(
+                          placePredictions: placePredictionList[index],
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const HorizontalLine(),
+                      itemCount: placePredictionList.length,
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics()
+                    ),
                   ),
                 )
               : Container(),
@@ -187,91 +191,87 @@ class _SearchScreenState extends State<SearchScreen> {
     if (placeName.length > 1) {
       // ignore: unused_local_variable
       String autoCompleteUrl =
-          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$dotenv.env['mapkey']";
+          // "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$dotenv.env['mapkey']";
+          "https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeName}&access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A&session_token=[GENERATED-UUID]&language=en&country=in&types=country%2Cregion%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory&proximity=72%2C23";
       var res = await RequestAssistant.getRequest(autoCompleteUrl);
       if (res == "failed") {
         return;
       }
-      if (res["status"] == "OK") {
-        var predictions = res["predictions"];
-        var placesList = (predictions as List)
-            .map((e) => PlacePredictions.fromJson(e))
-            .toList();
-        setState(() {
-          placePredictionList = placesList;
-        });
-        // dev.log(placesList.toString());
-      }
+      // if (res["status"] == "OK") {
+      // var predictions = res["predictions"];
+      var predictions = res["suggestions"];
+
+      dev.log(predictions.toString());
+      var placesList = (predictions as List<dynamic>)
+          .map((e) => PlacePredictions.fromJson(e))
+          .toList();
+      setState(() {
+        placePredictionList = placesList;
+      });
+      // print the placePredictionList to console
+
+      // }
     }
   }
 }
 
 class PredictionTile extends StatelessWidget {
   final PlacePredictions placePredictions;
-  const PredictionTile({super.key, required this.placePredictions});
+
+  const PredictionTile({Key? key, required this.placePredictions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      // padding: const EdgeInsets.all(0),
       style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(0))),
+        padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(0)),
+      ),
       onPressed: () {
         getPlaceAddressDetails(
-            placePredictions.placeId ?? "getPlaceAddressDetails not found",
-            context);
+          placePredictions.placeId ?? "getPlaceAddressDetails not found",
+          context,
+        );
       },
-      child: Container(
-          child: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              const Icon(Icons.add_location),
-              const SizedBox(
-                width: 14,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            const Icon(Icons.add_location),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    placePredictions.place_formatted ?? "place_formatted not found",
+                    overflow: TextOverflow.visible,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  // Text(
+                  //   placePredictions.neighborhood ?? "place_formatted is not found",
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  // ),
+                ],
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      placePredictions.mainText ?? "mainText not found",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      placePredictions.secondaryText ??
-                          "secondaryText is not found",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   void getPlaceAddressDetails(String placeId, context) async {
     showDialog(
         context: context,
-        builder: (builder) => ProgressDialog(
+        builder: (builder) => const ProgressDialog(
               message: "Setting Drop Off, Please wait...",
             ));
     String placeDetai1sUr1 =
-        "https://maps.googleapis.com/maps/api/place/details/json?place id=$placeId&key=$dotenv.env['mapkey']";
+        // "https://maps.googleapis.com/maps/api/place/details/json?place id=$placeId&key=$dotenv.env['mapkey']";
+        "https://api.mapbox.com/search/searchbox/v1/retrieve/${placeId}?session_token=[GENERATED-UUID]&access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A";
 
     var res = await RequestAssistant.getRequest(placeDetai1sUr1);
 
@@ -279,37 +279,30 @@ class PredictionTile extends StatelessWidget {
 
     if (res == "failed") return;
 
-    if (res["status"] == "OK") {
-      Address address = Address();
-      address.placeName = res["result"]["name"];
-      address.placeId = placeId;
-      address.latitude = res["result"]["geometry"]["location"]["lat"];
-      address.longitude = res["result"]["geometry"]["location"]["lng"];
+    // if (res["status"] == "OK") {
+    // Address address = Address();
+    // address.placeName = res["result"]["name"];
+    // address.placeId = placeId;
+    // address.latitude = res["result"]["geometry"]["location"]["lat"];
+    // address.longitude = res["result"]["geometry"]["location"]["lng"];
 
-      Provider.of<AppData>(context, listen: false)
-          .updateUserDropOffLocationPlaceName(address);
-      dev.log("This is drop off location :: ");
-      dev.log(address.placeName.toString());
+    // for mapbox
+    Address address = Address();
+    address.placeName =
+        res["features"][0]["properties"]["name"] ?? "placeName not found";
+    address.placeId = placeId;
+    address.latitude = res["features"][0]["properties"]["coordinates"]
+            ["latitude"] ??
+        "latitude not found";
+    address.longitude = res["features"][0]["properties"]["coordinates"]
+            ["longitude"] ??
+        "longitude not found";
 
-      Navigator.pop(context, "obtainDirection");
-    }
+    Provider.of<AppData>(context, listen: false)
+        .updateUserDropOffLocationPlaceName(address);
+    dev.log("This is drop off location :: ");
+    dev.log(address.placeName.toString());
 
-//     void getPIaceAddressDetaiIs(String placeld) async
-// String placeDetai1sUr1 =
-// "https://maps.googleapis.com/maps/api/place/details/json?place id=$p1aceId&key=$mapKey";
-// var res = await RequestAssistant.getRequest(p1aceDetai1sUr1);
-// if(res "failed")
-// return;
-// "0K")
-// Address();
-// Address
-// address =
-// address. placeName = rest "result"] ["name"];
-// address. placeld = placeld;
-// address.
-// latitude = rest "result"] ["geometry"] ["location"] ["lat"];
-// address. longitude = rest "result"]
-//   }
-    /////////
+    Navigator.pop(context, "obtainDirection");
   }
 }
