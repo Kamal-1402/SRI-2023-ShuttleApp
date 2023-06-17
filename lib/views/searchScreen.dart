@@ -249,7 +249,7 @@ class PredictionTile extends StatelessWidget {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Text(
                   //   placePredictions.neighborhood ?? "place_formatted is not found",
                   //   overflow: TextOverflow.ellipsis,
@@ -301,7 +301,7 @@ class PredictionTile extends StatelessWidget {
 
     Provider.of<AppData>(context, listen: false)
         .updateUserDropOffLocationPlaceName(address);
-    dev.log("This is drop off location :: ");
+    dev.log("This is drop off location searchScreen:: ");
     dev.log(address.placeName.toString());
 
     Navigator.pop(context, "obtainDirection");

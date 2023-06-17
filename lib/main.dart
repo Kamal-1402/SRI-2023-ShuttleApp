@@ -15,9 +15,9 @@ import 'package:learn_flutter/UI/map_base.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer' as dev show log;
 
-import 'package:flutter_map/flutter_map.dart';
+// import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_map/plugin_api.dart';
+// import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {

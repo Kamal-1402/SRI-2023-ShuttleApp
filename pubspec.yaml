@@ -42,14 +42,16 @@ dependencies:
   provider: ^6.0.5
   google_maps_flutter_web: ^0.5.0
   mapbox_gl: ^0.16.0
-  flutter_map: ^5.0.0
+  # flutter_map: ^5.0.0
   flutter_dotenv: ^5.1.0
   latlong2: ^0.9.0
   geolocator: ^9.0.2
   latlng: ^1.0.0
   firebase_database: ^10.2.3
   google_maps_flutter: ^2.3.0
-  http: ^1.0.0
+  http: ^0.13.1
+  flutter_polyline_points: ^1.0.0
+  font_awesome_flutter: ^10.4.0
   # http: ^1.0.0
 
 dev_dependencies:
@@ -79,6 +81,7 @@ flutter:
     - assets/map_styles/Places.json
     - images/pickicon.png
     - images/desticon.png
+    - images/Shuttle.jpg
 
    
   # To add assets to your application, add an assets section, like this:
