@@ -93,10 +93,11 @@ class _loginPageState extends State<loginPage> {
                         );
                         dev.log('user found');
                         dev.log(userCredential.toString());
+                        displayToastMessage("You are logged in", context);
                         if (userCredential.user!.emailVerified) {
                           dev.log('user verified');
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/Home/', (route) => false);
+                              '/Home/MapGoogle/', (route) => false);
                         }
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
@@ -132,4 +133,13 @@ class _loginPageState extends State<loginPage> {
       ),
     );
   }
+}
+
+void displayToastMessage(String message, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
+  // Navigator.push(context,"somtuind");
 }

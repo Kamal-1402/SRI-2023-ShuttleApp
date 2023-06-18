@@ -28,7 +28,7 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 DatabaseReference usersRef =
-    FirebaseDatabase.instance.reference().child("users");
+    FirebaseDatabase.instance.ref().child("users");
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -43,10 +43,11 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             // useMaterial3: true,
           ),
-          // home: const Authentication(),
+          home: const Authentication(),
           // home:const EmailVerify(),
           // home:const HomePage(),
-          home: const MapGoogle(),
+          // home: const MapGoogle(),
+          // home: const RegisterPage(),
           // home: MapBase(),
 
           routes: {
@@ -78,19 +79,24 @@ class Authentication extends StatelessWidget {
             final CurrUser = FirebaseAuth.instance.currentUser;
             if (CurrUser == null) {
               dev.log("user not found");
-              return Column(
-                children: [
-                  const Text("you are not logged in"),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/login/', (route) => false);
-
-                      // const EmailVerify();
-                    },
-                    child: const Text('click here to login'),
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      const Text("you are not logged in"),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamedAndRemoveUntil('/login/', (route) => false);
+                
+                          // const EmailVerify();
+                        },
+                        child: const Text('click here to login'),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               );
 
               // return const loginPage();
@@ -100,7 +106,8 @@ class Authentication extends StatelessWidget {
               dev.log(CurrUser.toString());
 
               // go and attach the other pages here
-              return const HomePage();
+              // return const HomePage();
+              return const MapGoogle();
             } else {
               dev.log("you are not email verified");
               dev.log(CurrUser.toString());

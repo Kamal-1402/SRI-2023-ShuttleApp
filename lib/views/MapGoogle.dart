@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as dev show log;
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +19,8 @@ import 'package:provider/provider.dart';
 
 import '../AllWidgets/progressDialog.dart';
 import '../DataHandler/appData.dart';
+import '../Models/allUsers.dart';
+import '../Models/configMaps.dart';
 
 class MapGoogle extends StatefulWidget {
   const MapGoogle({super.key});
@@ -48,12 +52,32 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   List<LatLng> pLineCoordinates = [];
   Set<Polyline> polylineSet = {};
 
+  // colot text
+  static const colorizeColors = [
+    Colors.purple,
+    Colors.blue,
+    Colors.yellow,
+    Colors.red,
+  ];
+
+  static const colorizeTextStyle = TextStyle(
+    fontSize: 20.0,
+    fontFamily: 'Horizon',
+  );
+
   // markers
   Set<Marker> markersSet = {};
   Set<Circle> circlesSet = {};
 
   double rideDetailsContainerHeight = 0;
+  double requestRideContainerHeight = 0;
   double searchContainerHeight = 300.0;
+
+  @override
+  void initState() {
+    super.initState();
+    AssistantMethods.getCurrentOnlineUserInfo();
+  }
 
   void resetApp() {
     setState(() {
@@ -61,12 +85,67 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       searchContainerHeight = 300.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 300.0;
+      requestRideContainerHeight = 0;
       polylineSet.clear();
       markersSet.clear();
       circlesSet.clear();
       pLineCoordinates.clear();
     });
     locatePosition();
+  }
+
+  DatabaseReference? rideRequestRef;
+
+  void saveRideRequest() {
+    // ignore: deprecated_member_use
+
+    rideRequestRef =
+        FirebaseDatabase.instance.ref().child('Ride Requests').push();
+
+    var pickUp = Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var dropOff = Provider.of<AppData>(context, listen: false).dropOffLocation;
+    dev.log("pickUp is here, $pickUp, $dropOff");
+    Map pickUpLocMap = {
+      "latitude": pickUp.latitude.toString(),
+      "longitude": pickUp.longitude.toString(),
+    };
+
+    Map dropOffLocMap = {
+      "latitude": dropOff.latitude.toString(),
+      "longitude": dropOff.longitude.toString(),
+    };
+
+    Map rideInfoMap = {
+      "driver_id": "waiting",
+      "payment_method": "cash",
+      "pickUp": pickUpLocMap,
+      "dropOff": dropOffLocMap,
+      "created_at": DateTime.now().toString(),
+      "rider_name": userCurrentInfo!.displayName ?? "Ricky ",
+      // "rider_name": "ricky ",
+      "rider_phone": userCurrentInfo!.phoneNumber ?? "99999999 ",
+      // "rider_phone": "99999999999 ",
+      "pickup_address": pickUp.placeName,
+      "dropoff_address": dropOff.placeName,
+      "ride_type": "Shuttle",
+    };
+    dev.log("saverideinfo,rideInfoMap is here");
+    rideRequestRef!.set(rideInfoMap);
+  }
+
+  void cancelRideRequest() {
+    rideRequestRef!.remove();
+  }
+
+  void displayRequestRideContainer() {
+    setState(() {
+      requestRideContainerHeight = 250.0;
+      rideDetailsContainerHeight = 0;
+      bottomPaddingOfMap = 230.0;
+      drawerOpen = true;
+    });
+    dev.log("displayRequestRideContainer is here");
+    saveRideRequest();
   }
 
   void displayRideDetailsContainer() async {
@@ -78,7 +157,6 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       drawerOpen = false;
     });
   }
-
 
   Future<bool> _determinePosition() async {
     bool serviceEnabled;
@@ -135,14 +213,14 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('Map Google'),
+        title: const Text('Home Page'),
       ),
       drawer: Container(
         color: Colors.white,
         width: 255,
         child: Drawer(
           child: ListView(
-            children:const [
+            children: const [
               // Drawer Header
               UserAccountsDrawerHeader(
                 accountName: Text("User Name"),
@@ -165,18 +243,16 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
               ),
               ListTile(
                 leading: Icon(Icons.info),
-                title:  Text("About"),
+                title: Text("About"),
               ),
               ListTile(
-                leading:  Icon(Icons.logout),
-                title:  Text("Sign Out"),
+                leading: Icon(Icons.logout),
+                title: Text("Sign Out"),
               ),
             ],
           ),
         ),
       ),
-      
-      
       body: Stack(
         children: [
           GoogleMap(
@@ -205,7 +281,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
             },
           ),
 
-          // HamburgerButton for Drawer 
+          // HamburgerButton for Drawer
           Positioned(
             top: 38,
             left: 22,
@@ -233,7 +309,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 20,
-                  child:Icon(
+                  child: Icon(
                     (drawerOpen) ? Icons.menu : Icons.close,
                     color: Colors.black,
                   ),
@@ -241,7 +317,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
               ),
             ),
           ),
-          
+
           Positioned(
             left: 0,
             right: 0,
@@ -249,7 +325,6 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
             child: AnimatedSize(
               duration: const Duration(milliseconds: 160),
               curve: Curves.bounceIn,
-
               child: Container(
                 height: searchContainerHeight,
                 decoration: BoxDecoration(
@@ -277,7 +352,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                       ),
                       const Text(
                         "Where to?",
-                        style: TextStyle(fontSize: 20, fontFamily: "Brand-Bold"),
+                        style:
+                            TextStyle(fontSize: 20, fontFamily: "Brand-Bold"),
                       ),
                       const SizedBox(height: 20),
                       GestureDetector(
@@ -382,7 +458,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
               ),
             ),
           ),
-        
+
           Positioned(
             bottom: 0,
             left: 0,
@@ -392,7 +468,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
               curve: Curves.bounceIn,
               child: Container(
                 height: rideDetailsContainerHeight,
-                decoration:const BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
@@ -407,138 +483,245 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-               child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 18),
-                 child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      color: Colors.tealAccent[100],
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        color: Colors.tealAccent[100],
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "images/Shuttle.jpg",
+                                height: 70,
+                                width: 80,
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Shuttle Vhicle",
+                                    style: TextStyle(
+                                        fontSize: 18, fontFamily: "Brand-Bold"),
+                                  ),
+                                  Text(
+                                    ((tripDirectionDetails != null)
+                                        ? tripDirectionDetails!.distanceValue!
+                                                .toStringAsFixed(4) +
+                                            " Km"
+                                        : ''),
+                                    // "Distance -10Km",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.grey[600]),
+                                  ),
+                                ],
+                              ),
+                              const Expanded(child: SizedBox()),
+                              Text(
+                                ((tripDirectionDetails != null)
+                                    ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
+                                    : ''),
+                                style: const TextStyle(
+                                    fontSize: 18, fontFamily: "Brand-Bold"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
                           children: [
-                            Image.asset(
-                              "images/Shuttle.jpg",
-                              height: 70,
-                              width: 80,
+                            Icon(
+                              FontAwesomeIcons.moneyBillAlt,
+                              size: 18,
+                              color: Colors.black54,
                             ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Shuttle Vhicle",
-                                  style: TextStyle(
-                                      fontSize: 18, fontFamily: "Brand-Bold"),
-                                ),
-                                Text(
-                                  ((tripDirectionDetails != null)
-                                      ? tripDirectionDetails!.distanceText.toString()
-                                      : ''),
-                                  // "Distance -10Km",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[600]),
-                                ),
-                              ],
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Text(
-                              ((tripDirectionDetails != null)
-                                  ? '\$${AssistantMethods.calculateFares(tripDirectionDetails!)}'
-                                  : ''),
-                              style: const TextStyle(
-                                  fontSize: 18, fontFamily: "Brand-Bold"),
-                            ),
+                            SizedBox(width: 16),
+                            Text("Cash"),
+                            SizedBox(width: 6),
+                            Icon(Icons.keyboard_arrow_down,
+                                color: Colors.black54, size: 16),
                           ],
                         ),
                       ),
-                    ),
-            
-                    const SizedBox(height: 22),
-            
-                    const Padding(
-                      padding:EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          Icon(
-                            FontAwesomeIcons.moneyBillAlt,
-                            size: 18,
-                            color: Colors.black54,
+                      const SizedBox(height: 22),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            displayRequestRideContainer();
+                            dev.log("Request Button Pressed");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.tealAccent[700],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
+                            ),
                           ),
-                          SizedBox(width: 16),
-                          Text("Cash"),
-                          SizedBox(width: 6),
-                          Icon(Icons.keyboard_arrow_down, color: Colors.black54, size: 16),
-                        ],
-                      ),
-                    ),
-            
-                    const SizedBox(height: 22),
-                    // Padding(
-                    //   padding:EdgeInsets.symmetric(horizontal: 16),
-                    //   child: ElevatedButton(
-                    //     onPressed: () {
-                    //       Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //             builder: (context) => const ConfirmSheet()),
-                    //       );
-                    //     },
-                    //     style: ElevatedButton.styleFrom(
-                    //       primary: Colors.tealAccent[700],
-                    //       shape: const RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.all(
-                    //           Radius.circular(25),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     child: Container(
-                    //       height: 50,
-                    //       child: const Center(
-                    //         child: Text(
-                    //           "Confirm",
-                    //           style: TextStyle(
-                    //               fontSize: 18,
-                    //               fontFamily: "Brand-Bold",
-                    //               color: Colors.white),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // )
-                  ],
-                 ),
-               ),
+                          child: const SizedBox(
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "Request",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Brand-Bold",
+                                    color: Colors.white),
+                              ),
+                              // Icon(FontAwesomeIcons.taxi, color: Colors.white, size: 18,),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        
 
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 15,
+                    spreadRadius: 0.5,
+                    offset: Offset(0.7, 0.7),
+                  ),
+                ],
+              ),
+              height: requestRideContainerHeight,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 12.5,
+                    ),
+                    Positioned(
+                      right: 0,
+                      left: 0,
+                      bottom: 0,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: AnimatedTextKit(
+                          onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => const ConfirmSheet()),
+                            // );
+                            dev.log("CLicked on Animated Text");
+                          },
+                          animatedTexts: [
+                            ColorizeAnimatedText(
+                              'Requesting a Ride..',
+                              textStyle: colorizeTextStyle,
+                              colors: colorizeColors,
+                            ),
+                            ColorizeAnimatedText(
+                              'Please Wait..',
+                              textStyle: colorizeTextStyle,
+                              colors: colorizeColors,
+                            ),
+                            ColorizeAnimatedText(
+                              'Finding a Driver..',
+                              textStyle: colorizeTextStyle,
+                              colors: colorizeColors,
+                            ),
+                          ],
+                          isRepeatingAnimation: true,
+                          // textAlign: TextAlign.center,
+                          // aligment: AlignmentDirectional.topStart,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        cancelRideRequest();
+                        resetApp();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(26),
+                            border:
+                                Border.all(width: 2, color: Colors.grey[300]!),
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            size: 26,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: const Text(
+                        "Cancel Ride",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Future<void> getPlaceDirection() async {
-    var initialPos =Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var initialPos =
+        Provider.of<AppData>(context, listen: false).pickUpLocation;
     var finalPos = Provider.of<AppData>(context, listen: false).dropOffLocation;
 
-    var pickUpLatLng =LatLng(initialPos.latitude ?? 0.0, initialPos.longitude ?? 0);
-    var dropOffLatLng =LatLng(finalPos.latitude ?? 0.0, finalPos.longitude ?? 0);
+    var pickUpLatLng =
+        LatLng(initialPos.latitude ?? 0.0, initialPos.longitude ?? 0);
+    var dropOffLatLng =
+        LatLng(finalPos.latitude ?? 0.0, finalPos.longitude ?? 0);
     dev.log("This is your pickUpLatLng MapGoogle:: " + pickUpLatLng.toString());
-    dev.log("This is your dropOffLatLng MapGoogle:: " + dropOffLatLng.toString());
+    dev.log(
+        "This is your dropOffLatLng MapGoogle:: " + dropOffLatLng.toString());
     showDialog(
         context: context,
         builder: (BuildContext context) => const ProgressDialog(
               message: "Please wait... this is MapGoogle",
             ));
-    var details = await AssistantMethods.obtainPlaceDirectionDetails(pickUpLatLng, dropOffLatLng);
+    var details = await AssistantMethods.obtainPlaceDirectionDetails(
+        pickUpLatLng, dropOffLatLng);
     setState(() {
       tripDirectionDetails = details;
     });
-
 
     Navigator.pop(context);
     dev.log("This is Encoded Points :: ");
@@ -595,7 +778,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     Marker pickUpLocMarker = Marker(
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       infoWindow:
-          InfoWindow(title:initialPos.placeName, snippet: "My Location"),
+          InfoWindow(title: initialPos.placeName, snippet: "My Location"),
       position: pickUpLatLng,
       markerId: const MarkerId("pickUpId"),
     );
@@ -603,7 +786,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     Marker dropOffLocMarker = Marker(
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       infoWindow:
-          InfoWindow(title:finalPos.placeName, snippet: "DropOff Location"),
+          InfoWindow(title: finalPos.placeName, snippet: "DropOff Location"),
       position: dropOffLatLng,
       markerId: const MarkerId("dropOffId"),
     );
