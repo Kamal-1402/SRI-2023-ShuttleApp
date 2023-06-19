@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import '../AllWidgets/progressDialog.dart';
 import '../DataHandler/appData.dart';
 import '../Models/allUsers.dart';
-import '../Models/configMaps.dart';
+import '../configMaps.dart';
 
 class MapGoogle extends StatefulWidget {
   const MapGoogle({super.key});

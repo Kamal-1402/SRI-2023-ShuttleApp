@@ -78,12 +78,12 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - .env
-    - assets/map_styles/Streets.json
-    - assets/map_styles/Places.json
-    - images/pickicon.png
-    - images/desticon.png
-    - images/Shuttle.jpg
+      - .env
+      - assets/map_styles/Streets.json
+      - assets/map_styles/Places.json
+      - images/pickicon.png
+      - images/desticon.png
+      - images/Shuttle.jpg
 
    
   # To add assets to your application, add an assets section, like this:
