@@ -113,6 +113,7 @@ class _loginPageState extends State<loginPage> {
                                 }
                               }
                             } as FutureOr Function(DatabaseEvent value));
+                            
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           dev.log('No user found for that email.');
