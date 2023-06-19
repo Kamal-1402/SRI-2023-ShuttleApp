@@ -43,7 +43,10 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             // useMaterial3: true,
           ),
-          home: const Authentication(),
+          // home: const Authentication(),
+          home: FirebaseAuth.instance.currentUser == null
+              ? const loginPage()
+              : const MapGoogle(),
           // home:const EmailVerify(),
           // home:const HomePage(),
           // home: const MapGoogle(),

@@ -4,7 +4,7 @@ import 'Models/allUsers.dart';
 
 const String mapkey = "AIzaSyCplMNadl9rrBQuY6QdCViRRVRqB3mxfzI";
 
-User firebaseUser = FirebaseAuth.instance.currentUser!;
+User? firebaseUser; //= FirebaseAuth.instance.currentUser!;
 
 Users? userCurrentInfo;
 // config userConfig = config();

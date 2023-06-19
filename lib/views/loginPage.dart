@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as dev show log;
 import 'package:learn_flutter/firebase_options.dart';
 import 'package:learn_flutter/views/HomePage.dart';
+
+import '../main.dart';
 // import 'package:learn_flutter/views/RegisterPage.dart';
 
 class loginPage extends StatefulWidget {
@@ -94,11 +99,22 @@ class _loginPageState extends State<loginPage> {
                         dev.log('user found');
                         dev.log(userCredential.toString());
                         displayToastMessage("You are logged in", context);
-                        if (userCredential.user!.emailVerified) {
-                          dev.log('user verified');
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/Home/MapGoogle/', (route) => false);
-                        }
+
+                        // save data in realtime
+                        usersRef
+                            .child(userCredential.user!.uid)
+                            .once()
+                            .then((DataSnapshot snap) {
+                              if (snap.value != null) {
+                                if (userCredential.user!.emailVerified) {
+                                  dev.log('user verified');
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      '/Home/MapGoogle/', (route) => false);
+                                }
+                              }
+                            } as FutureOr Function(DatabaseEvent value));
+
+
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           dev.log('No user found for that email.');
