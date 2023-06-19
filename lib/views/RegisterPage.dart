@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:driver_app/configMaps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   TextFormField(
                     controller: displayName, // Hides or shows the password
-                    decoration:const InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Username',
                     ),
@@ -96,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: phoneNumber, // Hides or shows the password
-                    decoration:const InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Mobile',
                       prefix: Text('+91 '),
@@ -116,20 +117,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           password: password.text,
                         );
                         dev.log(userCredential.toString());
-                        
-                          
-                          
-                          usersRef.child(userCredential.user!.uid).set({
-                            'displayName': displayName.text.trim(),
-                            'email': email.text.trim(),
-                            'phoneNumber': phoneNumber.text.trim(),
-                            
-                          });
-                          displayToastMessage('User created successfully', context);
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login/', (route) => false);
 
-              
+                        driversRef.child(userCredential.user!.uid).set({
+                          'displayName': displayName.text.trim(),
+                          'email': email.text.trim(),
+                          'phoneNumber': phoneNumber.text.trim(),
+                        });
+
+                        currentfirebaseUser = userCredential.user;
+
+                        displayToastMessage(
+                            'User created successfully', context);
+                        Navigator.pushNamed(context, '/Register/CarInfo/');
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'email-already-in-use') {
                           dev.log('The account already exists for that email.');

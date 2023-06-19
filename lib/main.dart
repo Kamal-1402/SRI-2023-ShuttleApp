@@ -1,3 +1,5 @@
+import 'package:driver_app/configMaps.dart';
+import 'package:driver_app/views/carInfo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +27,18 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await DotEnv().load();
 
+  currentfirebaseUser = FirebaseAuth.instance.currentUser;
+
   runApp(const MyApp());
 }
-DatabaseReference usersRef =
-    FirebaseDatabase.instance.ref().child("users");
+
+DatabaseReference usersRef = FirebaseDatabase.instance.ref().child("users");
+DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
+DatabaseReference rideRequestRef = FirebaseDatabase.instance
+    .ref()
+    .child("drivers")
+    .child(currentfirebaseUser!.uid)
+    .child("newRide");
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -44,9 +54,10 @@ class MyApp extends StatelessWidget {
             // useMaterial3: true,
           ),
           // home: const Authentication(),
+          home:FirebaseAuth.instance.currentUser == null ? const Authentication() : const MapGoogle(),
           // home:const EmailVerify(),
           // home:const HomePage(),
-          home: const MapGoogle(),
+          // home: const MapGoogle(),
           // home: const RegisterPage(),
           // home: MapBase(),
 
@@ -59,6 +70,7 @@ class MyApp extends StatelessWidget {
             "/Home/MapPage/": (context) => const MapPage(),
             // "/api/search/": (context) => MapBase(),
             "/Home/MapGoogle/": (context) => const MapGoogle(),
+            "/Register/CarInfo/": (context) => CarInfo(),
           }),
     );
   }
@@ -87,9 +99,9 @@ class Authentication extends StatelessWidget {
                       const Text("you are not logged in"),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushNamedAndRemoveUntil('/login/', (route) => false);
-                
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login/', (route) => false);
+
                           // const EmailVerify();
                         },
                         child: const Text('click here to login'),

@@ -1,4 +1,9 @@
+import 'dart:async';
+
+import 'package:driver_app/configMaps.dart';
+import 'package:driver_app/main.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as dev show log;
@@ -94,11 +99,20 @@ class _loginPageState extends State<loginPage> {
                         dev.log('user found');
                         dev.log(userCredential.toString());
                         displayToastMessage("You are logged in", context);
-                        if (userCredential.user!.emailVerified) {
-                          dev.log('user verified');
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/Home/MapGoogle/', (route) => false);
-                        }
+
+                        driversRef
+                            .child(userCredential.user!.uid)
+                            .once()
+                            .then((DataSnapshot snap) {
+                              if (snap.value != null) {
+                                currentfirebaseUser = firebaseUser;
+                                if (userCredential.user!.emailVerified) {
+                                  dev.log('user verified');
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      '/Home/MapGoogle/', (route) => false);
+                                }
+                              }
+                            } as FutureOr Function(DatabaseEvent value));
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           dev.log('No user found for that email.');

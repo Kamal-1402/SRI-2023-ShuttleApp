@@ -1,12 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
 
-import 'allUsers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
+
+import 'Models/allUsers.dart';
 
 const String mapkey = "AIzaSyCplMNadl9rrBQuY6QdCViRRVRqB3mxfzI";
 
-User firebaseUser = FirebaseAuth.instance.currentUser!;
+User? firebaseUser; //= FirebaseAuth.instance.currentUser!;
 
 Users? userCurrentInfo;
+
+User? currentfirebaseUser;
+
+StreamSubscription<Position>? homeTabPageStreamSubscription;
+
 // config userConfig = config();
 // void configureMap() {
 //   userConfig.mapapikey = mapkey;

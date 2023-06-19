@@ -15,7 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../DataHandler/appData.dart';
 import '../Models/address.dart';
 import '../Models/allUsers.dart';
-import '../Models/configMaps.dart';
+import '../configMaps.dart';
 import '../Models/directDetails.dart';
 
 // import '../Models/configMaps.dart' as config show mapKey;
@@ -106,7 +106,7 @@ class AssistantMethods {
 
   static void getCurrentOnlineUserInfo() async {
     firebaseUser = await FirebaseAuth.instance.currentUser!;
-    String userId = firebaseUser.uid;
+    String userId = firebaseUser!.uid;
     dev.log("userId is $userId");
     DatabaseReference reference =
         FirebaseDatabase.instance.ref().child('users').child(userId);
