@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
           // home:const HomePage(),
           // home: const MapGoogle(),
           // home: const RegisterPage(),
+          // home:loginPage(),
           // home: MapBase(),
 
           routes: {

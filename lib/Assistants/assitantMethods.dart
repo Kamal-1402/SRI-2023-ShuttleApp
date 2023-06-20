@@ -104,22 +104,36 @@ class AssistantMethods {
     return double.parse(firstTwoDigits);
   }
 
+  // static void getCurrentOnlineUserInfo() async {
+  //   firebaseUser = await FirebaseAuth.instance.currentUser!;
+  //   String userId = firebaseUser!.uid;
+  //   dev.log("userId is $userId");
+  //   DatabaseReference reference =
+  //       FirebaseDatabase.instance.ref().child('users').child(userId);
+  //   reference.once().then((DataSnapshot snapshot) {
+  //         if (snapshot.value != null) {
+  //           userCurrentInfo = Users.fromSnapshot(snapshot);
+  //           dev.log("snapshot is here form AssistantMethods");
+  //         } else {
+  //           dev.log("snapshot is null form AssistantMethods");
+  //         }
+  //       } as FutureOr Function(DatabaseEvent value));
+  //   // get a current user info from firebase
+  // }
   static void getCurrentOnlineUserInfo() async {
     firebaseUser = await FirebaseAuth.instance.currentUser!;
     String userId = firebaseUser!.uid;
     dev.log("userId is $userId");
     DatabaseReference reference =
         FirebaseDatabase.instance.ref().child('users').child(userId);
-    reference.once().then((DataSnapshot snapshot) {
-          if (snapshot.value != null) {
-            userCurrentInfo = Users.fromSnapshot(snapshot);
-            dev.log("snapshot is here form AssistantMethods");
-          } else {
-            dev.log("snapshot is null form AssistantMethods");
-          }
-        } as FutureOr Function(DatabaseEvent value));
+    reference.once().then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        userCurrentInfo = Users.fromSnapshot(databaseEvent.snapshot);
+        dev.log("snapshot is here form AssistantMethods");
+      } else {
+        dev.log("snapshot is null form AssistantMethods");
+      }
+    }); //as FutureOr Function(DatabaseEvent value));
     // get a current user info from firebase
   }
 }
-
-

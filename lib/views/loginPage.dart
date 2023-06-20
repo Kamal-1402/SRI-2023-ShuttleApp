@@ -100,21 +100,19 @@ class _loginPageState extends State<loginPage> {
                         dev.log(userCredential.toString());
                         displayToastMessage("You are logged in", context);
 
-                        // save user data in realtime  
+                        // save user data in realtime
                         usersRef
                             .child(userCredential.user!.uid)
                             .once()
-                            .then((DataSnapshot snap) {
-                              if (snap.value != null) {
-                                if (userCredential.user!.emailVerified) {
-                                  dev.log('user verified');
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      '/Home/MapGoogle/', (route) => false);
-                                }
-                              }
-                            } as FutureOr Function(DatabaseEvent value));
-
-
+                            .then((DatabaseEvent databaseEvent) {
+                          if (databaseEvent.snapshot.value != null) {
+                            if (userCredential.user!.emailVerified) {
+                              dev.log('user verified');
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/Home/MapGoogle/', (route) => false);
+                            }
+                          }
+                        }); //as FutureOr Function(DatabaseEvent value));
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           dev.log('No user found for that email.');
