@@ -100,6 +100,7 @@ class _loginPageState extends State<loginPage> {
                         dev.log(userCredential.toString());
                         displayToastMessage("You are logged in", context);
 
+                        // driver real time database
                         driversRef
                             .child(userCredential.user!.uid)
                             .once()
@@ -113,7 +114,7 @@ class _loginPageState extends State<loginPage> {
                                 }
                               }
                             } as FutureOr Function(DatabaseEvent value));
-                            
+
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           dev.log('No user found for that email.');
