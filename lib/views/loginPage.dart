@@ -100,7 +100,7 @@ class _loginPageState extends State<loginPage> {
                         dev.log(userCredential.toString());
                         displayToastMessage("You are logged in", context);
 
-                        // save data in realtime
+                        // save user data in realtime  
                         usersRef
                             .child(userCredential.user!.uid)
                             .once()
