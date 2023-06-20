@@ -139,7 +139,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                           driverStatusText = "Offline Now - Go Online ";
                           isDriverAvailable = false;
                         });
-                        
+
                         displayToastMessage("You are Offline Now", context);
                       }
                     },
@@ -194,12 +194,12 @@ class _HomeTabPageState extends State<HomeTabPage> {
         Geolocator.getPositionStream().listen((Position position) {
       _currentPosition = position;
 
-      if(isDriverAvailable==true)
-      {
+      if (isDriverAvailable == true) {
         Geofire.setLocation(
-          currentfirebaseUser!.uid, position.latitude, position.longitude);
+            currentfirebaseUser!.uid, position.latitude, position.longitude);
+        dev.log("isDriverAvailable == true");
       }
-      
+
       LatLng latlng = LatLng(position.latitude, position.longitude);
       newGoogleMapController!.animateCamera(CameraUpdate.newLatLng(latlng));
     });
@@ -210,7 +210,5 @@ class _HomeTabPageState extends State<HomeTabPage> {
     rideRequestRef.onDisconnect();
     rideRequestRef.remove();
     // rideRequestRef = Null;
-
-    
   }
 }

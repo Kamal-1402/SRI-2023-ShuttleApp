@@ -27,10 +27,16 @@ class Users
   //       email = snapshot.value?['email'] ,
   //       phoneNumber = snapshot.value?['phoneNumber'] ,
   //       uid = snapshot.value?['uid' ] ;
-    Users.fromSnapshot(DataSnapshot snapshot)
-    : displayName = (snapshot.value as Map<String, dynamic>?)?['displayName'],
-      email = (snapshot.value as Map<String, dynamic>?)?['email'],
-      phoneNumber = (snapshot.value as Map<String, dynamic>?)?['phoneNumber'],
-      uid = (snapshot.value as Map<String, dynamic>?)?['uid'];
+    // Users.fromSnapshot(DataSnapshot snapshot)
+    // : displayName = (snapshot.value as Map<String, dynamic>?)?['displayName'],
+    //   email = (snapshot.value as Map<String, dynamic>?)?['email'],
+    //   phoneNumber = (snapshot.value as Map<String, dynamic>?)?['phoneNumber'],
+    //   uid = (snapshot.value as Map<String, dynamic>?)?['uid'];
+
+  Users.fromSnapshot(DataSnapshot snapshot)
+    : displayName = (snapshot.value as Map)['displayName'],
+      email = (snapshot.value as Map)['email'],
+      phoneNumber = (snapshot.value as Map)['phoneNumber'],
+      uid = (snapshot.value as Map)['uid']; 
 
 }
