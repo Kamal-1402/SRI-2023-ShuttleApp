@@ -3,10 +3,13 @@ import 'dart:developer' as dev show log;
 import 'package:driver_app/configMaps.dart';
 import 'package:driver_app/main.dart';
 import 'package:driver_app/views/carInfo.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../Notifications/pushNotificationService.dart';
 
 class HomeTabPage extends StatefulWidget {
   HomeTabPage({super.key});
@@ -28,6 +31,11 @@ class _HomeTabPageState extends State<HomeTabPage> {
   Color driverStatusColor = Colors.black;
 
   bool isDriverAvailable = false;
+  @override
+  void initState() {
+    super.initState();
+    getCurrentDriverInfo();
+  }
 
   Future<bool> _determinePosition() async {
     bool serviceEnabled;
@@ -74,6 +82,22 @@ class _HomeTabPageState extends State<HomeTabPage> {
       //     await AssistantMethods.searchCoordinateAddress(position, context);
       // dev.log("This is your address:: " + address);
     }
+  }
+
+  void getCurrentDriverInfo() async {
+    currentfirebaseUser = await FirebaseAuth.instance.currentUser!;
+    // driversRef
+    //     .child(currentfirebaseUser!.uid)
+    //     .once()
+    //     .then((DataSnapshot dataSnapshot) {
+    //   if (dataSnapshot.value != null) {
+    //     driversInformation = Drivers.fromSnapshot(dataSnapshot);
+    //   }
+    // });
+    PushNotificationService pushNotificationService = PushNotificationService();
+    pushNotificationService.getToken();
+    // AssistantMethods.retrieveHistoryInfo(context);
+    // setState(() {});
   }
 
   @override
