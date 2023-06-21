@@ -3,6 +3,7 @@ import 'dart:developer' as dev show log;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -135,5 +136,11 @@ class AssistantMethods {
       }
     }); //as FutureOr Function(DatabaseEvent value));
     // get a current user info from firebase
+  }
+
+  static double createRandomNumber(int num) {
+    var random = Random();
+    int radNumber = random.nextInt(num);
+    return radNumber.toDouble();
   }
 }
