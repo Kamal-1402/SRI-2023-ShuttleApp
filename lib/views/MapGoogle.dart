@@ -123,8 +123,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     Map rideInfoMap = {
       "driver_id": "waiting",
       "payment_method": "cash",
-      "pickUp": pickUpLocMap,
-      "dropOff": dropOffLocMap,
+      "pickup": pickUpLocMap,
+      "dropoff": dropOffLocMap,
       "created_at": DateTime.now().toString(),
       "rider_name": userCurrentInfo!.displayName ?? "Ricky ",
       // "rider_name": "ricky ",
