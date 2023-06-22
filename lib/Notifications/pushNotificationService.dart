@@ -2,30 +2,37 @@ import 'dart:async';
 // import 'dart:html';
 import 'dart:developer' as dev show log;
 
+import 'package:driver_app/Models/ridedetails.dart';
 import 'package:driver_app/main.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:io' show Platform;
 import '../configMaps.dart';
+import 'notificationDialog.dart';
 
 class PushNotificationService {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
-  Future initialise() async {
+  Future initialise(context) async {
     // if (Platform.isIOS) {
     //   firebaseMessaging
     //       .requestNotificationPermissions(IosNotificationSettings());
     // }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message
+      retrieveRideRequestInfo(getRideRequestId(message.data),context);
     });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    // onLanuch
+    FirebaseMessaging.onBackgroundMessage((message) =>
+        retrieveRideRequestInfo(getRideRequestId(message.data),context)
+            as Future<void>);
+    // onResum
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
       // Handle the message
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Handle the message
+      // getRideRequestId(message.data);
+      retrieveRideRequestInfo(getRideRequestId(message.data),context);
     });
 
     // firebaseMessaging.configure(
@@ -81,4 +88,67 @@ class PushNotificationService {
   //   Navigator.pushNamed(context, '/item',
   //       arguments: ItemArguments(item: Item(title, mMessage)));
   // }
+  String getRideRequestId(Map<String, dynamic> message) {
+    String rideRequestId = '';
+    if (Platform.isAndroid) {
+      rideRequestId = message['data']['ride_request_id'];
+      dev.log('ride_request_id: $rideRequestId', name: 'ride_request_id');
+    } else {
+      rideRequestId = message['ride_request_id'];
+      dev.log('ride_request_id: $rideRequestId', name: 'ride_request_id');
+    }
+    return rideRequestId;
+  }
+
+  void retrieveRideRequestInfo(String rideRequestId, BuildContext context) {
+    newRequestsRef
+        .child(rideRequestId)
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        double pickupLocationLat = double.parse(
+            (databaseEvent.snapshot.value as Map)['pickup']['latitude']
+                .toString());
+        double pickupLocationLng = double.parse(
+            (databaseEvent.snapshot.value as Map)['pickup']['longitude']
+                .toString());
+        String pickupAddress =
+            (databaseEvent.snapshot.value as Map)['pickup_address'].toString();
+
+        double dropOffLocationLat = double.parse(
+            (databaseEvent.snapshot.value as Map)['dropoff']['latitude']
+                .toString());
+        double dropOffLocationLng = double.parse(
+            (databaseEvent.snapshot.value as Map)['dropoff']['longitude']
+                .toString());
+        String dropOffAddress =
+            (databaseEvent.snapshot.value as Map)['dropoff_address'].toString();
+
+        String paymentMethod =
+            (databaseEvent.snapshot.value as Map)['payment_method'].toString();
+
+        RideDetails rideDetails = RideDetails();
+        rideDetails.ride_request_id = rideRequestId;
+        rideDetails.pickup_address = pickupAddress;
+        rideDetails.dropoff_address = dropOffAddress;
+        rideDetails.pickup = LatLng(pickupLocationLat, pickupLocationLng);
+        rideDetails.dropoff = LatLng(dropOffLocationLat, dropOffLocationLng);
+        rideDetails.payment_method = paymentMethod;
+
+        dev.log('Information :: ', name: 'Information');
+        // dev.log('ride_request_id: ${rideDetails.ride_request_id}', name: 'ride_request_id');
+        dev.log(
+            'pickup_address from pushnotification: ${rideDetails.pickup_address}',
+            name: 'pickup_address');
+        dev.log(
+            'dropoff_address pushnotification: ${rideDetails.dropoff_address}',
+            name: 'dropoff_address');
+
+        showDialog(context: context, 
+        barrierDismissible: false, 
+        builder: (BuildContext context) => NotificationDialog(rideDetails: rideDetails,),
+        );
+      }
+    });
+  }
 }

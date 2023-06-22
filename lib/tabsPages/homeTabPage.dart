@@ -95,6 +95,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     //   }
     // });
     PushNotificationService pushNotificationService = PushNotificationService();
+    pushNotificationService.initialise(context);
     pushNotificationService.getToken();
     // AssistantMethods.retrieveHistoryInfo(context);
     // setState(() {});
