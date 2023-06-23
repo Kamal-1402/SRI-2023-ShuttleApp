@@ -56,6 +56,7 @@ dependencies:
   fluttertoast: ^8.2.2
   flutter_geofire: ^2.0.3
   firebase_messaging: ^14.6.3
+  assets_audio_player: ^3.0.6
   # http: ^1.0.0
 
 dev_dependencies:
@@ -80,6 +81,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+      - sounds/alert.mp3
       - .env
       - images/pickicon.png
       - images/desticon.png

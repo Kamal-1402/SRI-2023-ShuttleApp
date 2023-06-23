@@ -2,6 +2,7 @@ import 'dart:async';
 // import 'dart:html';
 import 'dart:developer' as dev show log;
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driver_app/Models/ridedetails.dart';
 import 'package:driver_app/main.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,7 +16,7 @@ import 'notificationDialog.dart';
 class PushNotificationService {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
-  Future initialise(context) async {
+  Future initialize(context) async {
     // if (Platform.isIOS) {
     //   firebaseMessaging
     //       .requestNotificationPermissions(IosNotificationSettings());
@@ -101,11 +102,19 @@ class PushNotificationService {
   }
 
   void retrieveRideRequestInfo(String rideRequestId, BuildContext context) {
+    
+    
     newRequestsRef
         .child(rideRequestId)
         .once()
         .then((DatabaseEvent databaseEvent) {
       if (databaseEvent.snapshot.value != null) {
+
+        
+        assetsAudioPlayer.open(
+          Audio("sounds/alert.mp3"),
+        );
+        assetsAudioPlayer.play();
         double pickupLocationLat = double.parse(
             (databaseEvent.snapshot.value as Map)['pickup']['latitude']
                 .toString());

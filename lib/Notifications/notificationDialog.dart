@@ -1,10 +1,16 @@
+import 'package:driver_app/Assistants/assitantMethods.dart';
 import 'package:driver_app/Models/ridedetails.dart';
+import 'package:driver_app/configMaps.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
+import '../main.dart';
+import '../views/newRideScreen.dart';
 
 class NotificationDialog extends StatelessWidget {
   final RideDetails? rideDetails;
-  const NotificationDialog({super.key,this.rideDetails});
-  
+  const NotificationDialog({super.key, this.rideDetails});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -106,7 +112,7 @@ class NotificationDialog extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton (
+                  TextButton(
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
@@ -114,6 +120,7 @@ class NotificationDialog extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
+                      assetsAudioPlayer.stop();
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -145,7 +152,9 @@ class NotificationDialog extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
+                      assetsAudioPlayer.stop();
+                      checkAvailablityOfRide(context);
+                      // Navigator.pop(context);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -169,10 +178,56 @@ class NotificationDialog extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 10,),
+              height: 10,
+            ),
           ],
         ),
       ),
     );
   }
+
+  void checkAvailablityOfRide(context) {
+    rideRequestRef.once().then((DatabaseEvent databaseEvent) {
+      Navigator.pop(context);
+      String? theRideId = "";
+      if (databaseEvent.snapshot.value != null) {
+        theRideId = databaseEvent.snapshot.value.toString();
+      } else {
+        displayToastMessage("Ride not exists", context);
+      }
+      if(theRideId==rideDetails!.ride_request_id)
+      {
+        rideRequestRef.set("accepted");
+        AssistantMethods.disableHomeTabLiveLocationUpdates();
+        // Navigator.pop(context);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewRideScreen(rideDetails: rideDetails)));
+      }
+      else if(theRideId=="cancelled")
+      {
+        // Navigator.pop(context);
+        displayToastMessage("Ride has been cancelled", context);
+      }
+      else if(theRideId=="timeout")
+      {
+        // Navigator.pop(context);
+        displayToastMessage("Ride has timed out", context);
+      }
+      else
+      {
+        // Navigator.pop(context);
+        displayToastMessage("Ride not exists", context);
+      }
+    });
+  }
+}
+void displayToastMessage(String message, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
+  // Navigator.push(context,"somtuind");
 }
