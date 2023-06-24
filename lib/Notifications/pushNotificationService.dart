@@ -23,17 +23,17 @@ class PushNotificationService {
     // }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message
-      retrieveRideRequestInfo(getRideRequestId(message.data),context);
+      retrieveRideRequestInfo(getRideRequestId(message.data), context);
     });
     // onLanuch
     FirebaseMessaging.onBackgroundMessage((message) =>
-        retrieveRideRequestInfo(getRideRequestId(message.data),context)
+        retrieveRideRequestInfo(getRideRequestId(message.data), context)
             as Future<void>);
     // onResum
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       // Handle the message
       // getRideRequestId(message.data);
-      retrieveRideRequestInfo(getRideRequestId(message.data),context);
+      retrieveRideRequestInfo(getRideRequestId(message.data), context);
     });
 
     // firebaseMessaging.configure(
@@ -102,15 +102,11 @@ class PushNotificationService {
   }
 
   void retrieveRideRequestInfo(String rideRequestId, BuildContext context) {
-    
-    
     newRequestsRef
         .child(rideRequestId)
         .once()
         .then((DatabaseEvent databaseEvent) {
       if (databaseEvent.snapshot.value != null) {
-
-        
         assetsAudioPlayer.open(
           Audio("sounds/alert.mp3"),
         );
@@ -136,6 +132,10 @@ class PushNotificationService {
         String paymentMethod =
             (databaseEvent.snapshot.value as Map)['payment_method'].toString();
 
+        String rider_name = (databaseEvent.snapshot.value as Map)['rider_name'];
+        String rider_phone =
+            (databaseEvent.snapshot.value as Map)['rider_phone'];
+
         RideDetails rideDetails = RideDetails();
         rideDetails.ride_request_id = rideRequestId;
         rideDetails.pickup_address = pickupAddress;
@@ -143,6 +143,8 @@ class PushNotificationService {
         rideDetails.pickup = LatLng(pickupLocationLat, pickupLocationLng);
         rideDetails.dropoff = LatLng(dropOffLocationLat, dropOffLocationLng);
         rideDetails.payment_method = paymentMethod;
+        rideDetails.rider_name = rider_name;
+        rideDetails.rider_phone = rider_phone;
 
         dev.log('Information :: ', name: 'Information');
         // dev.log('ride_request_id: ${rideDetails.ride_request_id}', name: 'ride_request_id');
@@ -153,9 +155,12 @@ class PushNotificationService {
             'dropoff_address pushnotification: ${rideDetails.dropoff_address}',
             name: 'dropoff_address');
 
-        showDialog(context: context, 
-        barrierDismissible: false, 
-        builder: (BuildContext context) => NotificationDialog(rideDetails: rideDetails,),
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => NotificationDialog(
+            rideDetails: rideDetails,
+          ),
         );
       }
     });

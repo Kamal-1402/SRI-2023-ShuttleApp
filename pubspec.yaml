@@ -57,6 +57,7 @@ dependencies:
   flutter_geofire: ^2.0.3
   firebase_messaging: ^14.6.3
   assets_audio_player: ^3.0.6
+  maps_toolkit: ^2.0.1
   # http: ^1.0.0
 
 dev_dependencies:
