@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev show log;
+import 'dart:html';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
 import 'package:learn_flutter/Assistants/assitantMethods.dart';
 import 'package:learn_flutter/Models/directDetails.dart';
+import 'package:learn_flutter/main.dart';
 import 'package:learn_flutter/views/searchScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../AllWidgets/noDriverAvailableDialog.dart';
 import '../AllWidgets/progressDialog.dart';
 import '../Assistants/geoFireAssistant.dart';
 import '../DataHandler/appData.dart';
@@ -73,10 +76,16 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   // markers
   Set<Marker> markersSet = {};
   Set<Circle> circlesSet = {};
+  double driverDetailsContainerHeight = 0;
 
   double rideDetailsContainerHeight = 0;
   double requestRideContainerHeight = 0;
   double searchContainerHeight = 300.0;
+  String? state = "normal";
+
+  List<NearByAvailableDrivers>? availableDrivers;
+  // StreamSubscription<Event>? rideStreamSubscription;
+  StreamSubscription<DataSnapshot>? rideStreamSubscription;
 
   @override
   void initState() {
@@ -136,10 +145,44 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     };
     dev.log("saverideinfo,rideInfoMap is here");
     rideRequestRef!.set(rideInfoMap);
+
+    // error can be here
+    //rideStreamSubscription =
+    rideRequestRef!.onValue.listen((event) {
+      if (event.snapshot.value == null) {
+        return;
+      }
+      if ((event.snapshot.value as Map)["car_details"] != null) {
+        setState(() {
+          carDetailsDriver = (event.snapshot.value as Map)["car_details"].toString();
+        });
+      }
+      if ((event.snapshot.value as Map)["driver_name"] != null) {
+        setState(() {
+          driverName = (event.snapshot.value as Map)["driver_name"].toString();
+        });
+      }
+      if ((event.snapshot.value as Map)["driver_phone"] != null) {
+        setState(() {
+           driverphone= (event.snapshot.value as Map)["driver_phone"].toString();
+        });
+      }
+      if ((event.snapshot.value as Map)["status"] != null) {
+        setState(() {
+          statusRide = (event.snapshot.value as Map)["status"].toString();
+        });
+      }
+      if (statusRide == "accepted") {
+        displayDriverDetailsContainer();
+      }
+    }); //as StreamSubscription<DataSnapshot>?;
   }
 
   void cancelRideRequest() {
     rideRequestRef!.remove();
+    setState(() {
+      state = "normal";
+    });
   }
 
   void displayRequestRideContainer() {
@@ -151,6 +194,17 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     });
     dev.log("displayRequestRideContainer is here");
     saveRideRequest();
+  }
+
+  void displayDriverDetailsContainer() async {
+    // await getPlaceDirection();
+    setState(() {
+      requestRideContainerHeight = 0;
+      rideDetailsContainerHeight = 0;
+      bottomPaddingOfMap = 280;
+      driverDetailsContainerHeight = 310;
+      // drawerOpen = true;
+    });
   }
 
   void displayRideDetailsContainer() async {
@@ -325,6 +379,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
             ),
           ),
 
+          // Search UI
           Positioned(
             left: 0,
             right: 0,
@@ -466,6 +521,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
             ),
           ),
 
+          // Ride Details UI
           Positioned(
             bottom: 0,
             left: 0,
@@ -564,11 +620,18 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: ElevatedButton(
                           onPressed: () {
+                            setState(() {
+                              state = "requesting";
+                            });
                             displayRequestRideContainer();
+                            availableDrivers =
+                                GeoFireAssistant.nearByAvailableDriversList;
+                            searchNearestDriver();
+
                             dev.log("Request Button Pressed");
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.tealAccent[700],
+                            backgroundColor: Colors.tealAccent[700],
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(25),
@@ -597,6 +660,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
             ),
           ),
 
+          // Request or cancel UI
           Positioned(
             bottom: 0,
             left: 0,
@@ -702,6 +766,162 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
               ),
             ),
           ),
+
+          // Display assigned driver info
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 15,
+                    spreadRadius: 0.5,
+                    offset: Offset(0.7, 0.7),
+                  ),
+                ],
+              ),
+              height: driverDetailsContainerHeight,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rideStatus,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 20, fontFamily: "Brand-Bold"),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Divider(
+                      height: 2,
+                      thickness: 2.0,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      carDetailsDriver,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      driverName,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Divider(
+                      height: 2,
+                      thickness: 2.0,
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: Colors.grey[300]!.withOpacity(0.5)),
+                              ),
+                              child: const Icon(
+                                Icons.call,
+                                size: 25,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Call",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: Colors.grey[300]!.withOpacity(0.5)),
+                              ),
+                              child: const Icon(
+                                Icons.list_alt_outlined,
+                                size: 25,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Details",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: Colors.grey[300]!.withOpacity(0.5)),
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                size: 25,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Cancel",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -905,5 +1125,79 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
         nearByIcon = value;
       });
     }
+  }
+
+  void noDriverFound() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => const NoDriverAvailableDialog());
+  }
+
+  void searchNearestDriver() {
+    if (availableDrivers!.isEmpty) {
+      cancelRideRequest();
+      resetApp();
+      noDriverFound();
+      return;
+    }
+    var driver = availableDrivers?[0];
+    notifyDriver(driver!);
+    availableDrivers!.removeAt(0);
+    dev.log(driver.key.toString());
+  }
+
+  void notifyDriver(NearByAvailableDrivers driver) {
+    driversRef.child(driver.key!).child("newRide").set(rideRequestRef!.key);
+    driversRef
+        .child(driver.key!)
+        .child("token")
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        String token = databaseEvent.snapshot.value.toString();
+        AssistantMethods.sendNotificationToDriver(
+            token, context, rideRequestRef!.key!);
+      } else {
+        return;
+      }
+      // const timeout = Duration(seconds: 30);
+      // const ms = Duration(milliseconds: 1);
+      // Timer.periodic(timeout, (Timer t) {
+      //   driversRef.child(driver.key!).child("newRide").set("cancelled");
+      //   driversRef.child(driver.key!).child("newRide").onDisconnect();
+      //   driverRequestTimeOut = 30;
+      //   t.cancel();
+      // });
+
+      const oneSecondPassed = Duration(seconds: 1);
+      var timer = Timer.periodic(oneSecondPassed, (timer) {
+        if (state != "requesting") {
+          driversRef.child(driver.key!).child("newRide").set("cancelled");
+          driversRef.child(driver.key!).child("newRide").onDisconnect();
+          driverRequestTimeOut = 40;
+          timer.cancel();
+        }
+        driverRequestTimeOut--;
+
+        driversRef.child(driver.key!).child("newRide").onValue.listen((event) {
+          if (event.snapshot.value.toString() == "accepted") {
+            driversRef.child(driver.key!).child("newRide").onDisconnect();
+            driverRequestTimeOut = 40;
+            timer.cancel();
+          }
+        });
+        if (driverRequestTimeOut == 0) {
+          driversRef.child(driver.key!).child("newRide").set("timeout");
+          driversRef.child(driver.key!).child("newRide").onDisconnect();
+          cancelRideRequest();
+          resetApp();
+          driverRequestTimeOut = 40;
+          timer.cancel();
+
+          searchNearestDriver();
+        }
+      });
+    });
   }
 }
