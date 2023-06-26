@@ -13,12 +13,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:flutter_map/src/layer/tile_layer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:learn_flutter/AllWidgets/CollectFareDialog.dart';
 import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
 import 'package:learn_flutter/Assistants/assitantMethods.dart';
 import 'package:learn_flutter/Models/directDetails.dart';
 import 'package:learn_flutter/main.dart';
 import 'package:learn_flutter/views/searchScreen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../AllWidgets/noDriverAvailableDialog.dart';
 import '../AllWidgets/progressDialog.dart';
@@ -55,6 +57,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   DirectionDetails? tripDirectionDetails;
   bool nearByAvailableDriversKeysLoaded = false;
   BitmapDescriptor? nearByIcon;
+  bool isRequestingPositionDetails = false;
 
   // polylines
   List<LatLng> pLineCoordinates = [];
@@ -85,7 +88,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
 
   List<NearByAvailableDrivers>? availableDrivers;
   // StreamSubscription<Event>? rideStreamSubscription;
-  StreamSubscription<DataSnapshot>? rideStreamSubscription;
+  StreamSubscription<DatabaseEvent>? rideStreamSubscription;
 
   @override
   void initState() {
@@ -104,6 +107,12 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       markersSet.clear();
       circlesSet.clear();
       pLineCoordinates.clear();
+      statusRide = "";
+      driverName = "";
+      driverphone = "";
+      carDetailsDriver = "";
+      rideStatus = "Driver is Coming";
+      driverDetailsContainerHeight = 0.0;
     });
     locatePosition();
   }
@@ -147,14 +156,15 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     rideRequestRef!.set(rideInfoMap);
 
     // error can be here
-    //rideStreamSubscription =
-    rideRequestRef!.onValue.listen((event) {
+    rideStreamSubscription =
+    rideRequestRef!.onValue.listen((event) async {
       if (event.snapshot.value == null) {
         return;
       }
       if ((event.snapshot.value as Map)["car_details"] != null) {
         setState(() {
-          carDetailsDriver = (event.snapshot.value as Map)["car_details"].toString();
+          carDetailsDriver =
+              (event.snapshot.value as Map)["car_details"].toString();
         });
       }
       if ((event.snapshot.value as Map)["driver_name"] != null) {
@@ -164,8 +174,29 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       }
       if ((event.snapshot.value as Map)["driver_phone"] != null) {
         setState(() {
-           driverphone= (event.snapshot.value as Map)["driver_phone"].toString();
+          driverphone =
+              (event.snapshot.value as Map)["driver_phone"].toString();
         });
+      }
+      if ((event.snapshot.value as Map)["driver_location"] != null) {
+        double driverLat = double.parse(
+            (event.snapshot.value as Map)["driver_location"]["latitude"]
+                .toString());
+        double driverLng = double.parse(
+            (event.snapshot.value as Map)["driver_location"]["longitude"]
+                .toString());
+        LatLng driverCurrentLocation = LatLng(driverLat, driverLng);
+        if (statusRide == "accepted") {
+          updateRideTimeToPickUpLoc(driverCurrentLocation);
+        } else if (statusRide == "onride") {
+          updateRideTimeToDropOffLoc(driverCurrentLocation);
+        } else if (statusRide == "arrived") {
+          setState(() {
+            rideStatus = "Driver has Arrived";
+          });
+         }// else {
+        //   displayDriverOnMap(driverCurrentLocation);
+        // }
       }
       if ((event.snapshot.value as Map)["status"] != null) {
         setState(() {
@@ -174,8 +205,74 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       }
       if (statusRide == "accepted") {
         displayDriverDetailsContainer();
+        Geofire.stopListener();
+        deleteGeoFireMarkers();
+      }
+      if (statusRide == "ended") {
+        if ((event.snapshot.value as Map)["fares"] != null) {
+          double fares =
+              double.parse((event.snapshot.value as Map)["fares"].toString());
+          var res = await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) => CollectFareDialog(
+                    paymentMethod: "cash",
+                    fareAmount: fares,
+                  ));
+          if (res == "close") {
+            rideRequestRef!.onDisconnect();
+            rideRequestRef = null;
+            rideStreamSubscription!.cancel();
+            rideStreamSubscription = null;
+            resetApp();
+          }
+        }
       }
     }); //as StreamSubscription<DataSnapshot>?;
+  }
+
+  void deleteGeoFireMarkers() {
+    setState(() {
+      markersSet
+          .removeWhere((element) => element.markerId.value.contains("driver"));
+    });
+  }
+
+  void updateRideTimeToPickUpLoc(LatLng driverCurrentLocation) async {
+    if (isRequestingPositionDetails == false) {
+      isRequestingPositionDetails = true;
+      var positionUserLatLng =
+          LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
+      var details = await AssistantMethods.obtainPlaceDirectionDetails(
+          driverCurrentLocation, positionUserLatLng);
+      if (details == null) {
+        return;
+      }
+      setState(() {
+        rideStatus =
+            "Driver is Arriving - " + details.durationValue!.toString();
+      });
+      isRequestingPositionDetails = false;
+    }
+  }
+
+  void updateRideTimeToDropOffLoc(LatLng driverCurrentLocation) async {
+    if (isRequestingPositionDetails == false) {
+      isRequestingPositionDetails = true;
+      var dropOff =
+          Provider.of<AppData>(context, listen: false).dropOffLocation;
+      var dropOffLatLng = LatLng(dropOff.latitude!, dropOff.longitude!);
+      var details = await AssistantMethods.obtainPlaceDirectionDetails(
+          driverCurrentLocation, dropOffLatLng);
+      if (details == null) {
+        return;
+      }
+      setState(() {
+        rideStatus =
+            "Going to Destination - " + details.durationValue!.toString();
+      });
+      isRequestingPositionDetails = false;
+    }
   }
 
   void cancelRideRequest() {
@@ -273,9 +370,6 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     createIconMarker();
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Home Page'),
-      ),
       drawer: Container(
         color: Colors.white,
         width: 255,
@@ -837,84 +931,47 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                    width: 1.0,
-                                    color: Colors.grey[300]!.withOpacity(0.5)),
+                      //  call button
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: TextButton(
+                            onPressed: () async {
+                              var url = 'tel:$driverphone';
+                              if (await canLaunchUrl(url as Uri)) {
+                                await launchUrl(url as Uri);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
                               ),
-                              child: const Icon(
-                                Icons.call,
-                                size: 25,
-                              ),
+                              backgroundColor: Colors.tealAccent[700],
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              "Call",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                    width: 1.0,
-                                    color: Colors.grey[300]!.withOpacity(0.5)),
-                              ),
-                              child: const Icon(
-                                Icons.list_alt_outlined,
-                                size: 25,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.call,
+                                    color: Colors.white,
+                                    size: 26,
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "Call Driver",
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              "Details",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                    width: 1.0,
-                                    color: Colors.grey[300]!.withOpacity(0.5)),
-                              ),
-                              child: const Icon(
-                                Icons.close,
-                                size: 25,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              "Cancel",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
+                          ),
+                          ),
+                        
                       ],
                     )
                   ],
