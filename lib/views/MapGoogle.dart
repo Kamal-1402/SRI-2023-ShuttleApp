@@ -18,6 +18,8 @@ import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
 import 'package:learn_flutter/Assistants/assitantMethods.dart';
 import 'package:learn_flutter/Models/directDetails.dart';
 import 'package:learn_flutter/main.dart';
+import 'package:learn_flutter/views/loginPage.dart';
+import 'package:learn_flutter/views/ratingScreen.dart';
 import 'package:learn_flutter/views/searchScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -89,6 +91,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   List<NearByAvailableDrivers>? availableDrivers;
   // StreamSubscription<Event>? rideStreamSubscription;
   StreamSubscription<DatabaseEvent>? rideStreamSubscription;
+  String? uName="";
 
   @override
   void initState() {
@@ -150,15 +153,15 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       // "rider_phone": "99999999999 ",
       "pickup_address": pickUp.placeName,
       "dropoff_address": dropOff.placeName,
-      "ride_type": "Shuttle",
+      "ride_type": carRideType,
     };
     dev.log("saverideinfo,rideInfoMap is here");
     rideRequestRef!.set(rideInfoMap);
 
     // error can be here
-    rideStreamSubscription =
-    rideRequestRef!.onValue.listen((event) async {
+    rideStreamSubscription = rideRequestRef!.onValue.listen((event) async {
       if (event.snapshot.value == null) {
+        dev.log("event snapshot from RideRequestRef from MapGoogle is null");
         return;
       }
       if ((event.snapshot.value as Map)["car_details"] != null) {
@@ -194,7 +197,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
           setState(() {
             rideStatus = "Driver has Arrived";
           });
-         }// else {
+        } // else {
         //   displayDriverOnMap(driverCurrentLocation);
         // }
       }
@@ -219,7 +222,15 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                     paymentMethod: "cash",
                     fareAmount: fares,
                   ));
+          String driverId = "";
           if (res == "close") {
+            if ((event.snapshot.value as Map)["driver_id"] != null) {
+              driverId = (event.snapshot.value as Map)["driver_id"].toString();
+            }
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => RatingScreen(
+                      driverId: driverId,
+                    )));
             rideRequestRef!.onDisconnect();
             rideRequestRef = null;
             rideStreamSubscription!.cancel();
@@ -307,9 +318,9 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   void displayRideDetailsContainer() async {
     await getPlaceDirection();
     setState(() {
-      rideDetailsContainerHeight = 240;
+      rideDetailsContainerHeight = 340;
       searchContainerHeight = 0;
-      bottomPaddingOfMap = 240;
+      bottomPaddingOfMap = 360;
       drawerOpen = false;
     });
   }
@@ -360,6 +371,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       dev.log("This is your address:: " + address);
 
       initGeoFIreListner();
+      uName=userCurrentInfo!.displayName;
     }
   }
 
@@ -375,10 +387,10 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
         width: 255,
         child: Drawer(
           child: ListView(
-            children: const [
+            children: [
               // Drawer Header
               UserAccountsDrawerHeader(
-                accountName: Text("User Name"),
+                accountName: Text(uName ?? "User Name"),
                 accountEmail: Text("User Email"),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor: Colors.white,
@@ -645,53 +657,212 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
                   child: Column(
                     children: [
-                      Container(
-                        width: double.infinity,
-                        color: Colors.tealAccent[100],
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "images/Shuttle.jpg",
-                                height: 70,
-                                width: 80,
-                              ),
-                              const SizedBox(width: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Shuttle Vhicle",
-                                    style: TextStyle(
-                                        fontSize: 18, fontFamily: "Brand-Bold"),
-                                  ),
-                                  Text(
-                                    ((tripDirectionDetails != null)
-                                        ? tripDirectionDetails!.distanceValue!
-                                                .toStringAsFixed(4) +
-                                            " Km"
-                                        : ''),
-                                    // "Distance -10Km",
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.grey[600]),
-                                  ),
-                                ],
-                              ),
-                              const Expanded(child: SizedBox()),
-                              Text(
-                                ((tripDirectionDetails != null)
-                                    ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
-                                    : ''),
-                                style: const TextStyle(
-                                    fontSize: 18, fontFamily: "Brand-Bold"),
-                              ),
-                            ],
+
+
+                      // auto Ride
+                      GestureDetector(
+                        onTap: () {
+                          displayToastMessage("seraching Auto", context);
+                          setState(() {
+                            state = "requesting";
+                            carRideType = "auto";
+                          });
+                          displayRequestRideContainer();
+                          availableDrivers =
+                              GeoFireAssistant.nearByAvailableDriversList;
+                          searchNearestDriver();
+
+                          dev.log("Request Button Pressed");
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "images/bike.jpg",
+                                  height: 70,
+                                  width: 80,
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Shuttle Auto",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "Brand-Bold"),
+                                    ),
+                                    Text(
+                                      ((tripDirectionDetails != null)
+                                          ? tripDirectionDetails!.distanceValue!
+                                                  .toStringAsFixed(4) +
+                                              " Km"
+                                          : ''),
+                                      // "Distance -10Km",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
+                                const Expanded(child: SizedBox()),
+                                Text(
+                                  ((tripDirectionDetails != null)
+                                      ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
+                                      : ''),
+                                  style: const TextStyle(
+                                      fontSize: 18, fontFamily: "Brand-Bold"),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 22),
+                      const SizedBox(height: 10),
+                      Divider(height: 2, thickness: 2, color: Colors.grey),
+
+                      const SizedBox(height: 10),
+
+                      // van Ride
+                      GestureDetector(
+                        onTap: () {
+                          displayToastMessage("seraching Van", context);
+                          setState(() {
+                            state = "requesting";
+                            carRideType = "van";
+                          });
+                          displayRequestRideContainer();
+                          availableDrivers =
+                              GeoFireAssistant.nearByAvailableDriversList;
+                          searchNearestDriver();
+
+                          dev.log("Request Button Pressed");
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "images/ubergo.jpg",
+                                  height: 70,
+                                  width: 80,
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Shuttle Van",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "Brand-Bold"),
+                                    ),
+                                    Text(
+                                      ((tripDirectionDetails != null)
+                                          ? tripDirectionDetails!.distanceValue!
+                                                  .toStringAsFixed(4) +
+                                              " Km"
+                                          : ''),
+                                      // "Distance -10Km",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
+                                const Expanded(child: SizedBox()),
+                                Text(
+                                  ((tripDirectionDetails != null)
+                                      ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
+                                      : ''),
+                                  style: const TextStyle(
+                                      fontSize: 18, fontFamily: "Brand-Bold"),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(height: 2, thickness: 2, color: Colors.grey),
+
+                      const SizedBox(height: 10),
+
+                      // bus Ride
+                      GestureDetector(
+                        onTap: () {
+                          displayToastMessage("seraching Bus", context);
+                          setState(() {
+                            state = "requesting";
+                            carRideType = "bus";
+                          });
+                          displayRequestRideContainer();
+                          availableDrivers =
+                              GeoFireAssistant.nearByAvailableDriversList;
+                          searchNearestDriver();
+
+                          dev.log("Request Button Pressed");
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "images/uberx.jpg",
+                                  height: 70,
+                                  width: 80,
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Shuttle Bus",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "Brand-Bold"),
+                                    ),
+                                    Text(
+                                      ((tripDirectionDetails != null)
+                                          ? tripDirectionDetails!.distanceValue!
+                                                  .toStringAsFixed(4) +
+                                              " Km"
+                                          : ''),
+                                      // "Distance -10Km",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
+                                const Expanded(child: SizedBox()),
+                                Text(
+                                  ((tripDirectionDetails != null)
+                                      ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
+                                      : ''),
+                                  style: const TextStyle(
+                                      fontSize: 18, fontFamily: "Brand-Bold"),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(height: 2, thickness: 2, color: Colors.grey),
+
+                      const SizedBox(height: 10),
+
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
@@ -709,44 +880,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 22),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              state = "requesting";
-                            });
-                            displayRequestRideContainer();
-                            availableDrivers =
-                                GeoFireAssistant.nearByAvailableDriversList;
-                            searchNearestDriver();
-
-                            dev.log("Request Button Pressed");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.tealAccent[700],
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(25),
-                              ),
-                            ),
-                          ),
-                          child: const SizedBox(
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "Request",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: "Brand-Bold",
-                                    color: Colors.white),
-                              ),
-                              // Icon(FontAwesomeIcons.taxi, color: Colors.white, size: 18,),
-                            ),
-                          ),
-                        ),
-                      )
+                      
                     ],
                   ),
                 ),
@@ -931,7 +1065,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                      //  call button
+                        //  call button
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20),
                           child: TextButton(
@@ -970,8 +1104,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          ),
-                        
+                        ),
                       ],
                     )
                   ],
@@ -1199,9 +1332,26 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       return;
     }
     var driver = availableDrivers?[0];
-    notifyDriver(driver!);
-    availableDrivers!.removeAt(0);
-    dev.log(driver.key.toString());
+    driversRef.child(driver!.key!).child("car_details").child("type").once()
+        .then((DatabaseEvent databaseEvent) async{
+      if (databaseEvent.snapshot.value != null) {
+        String carType = databaseEvent.snapshot.value.toString();
+        if (carType == carRideType) {
+          dev.log(driver.key.toString());
+          notifyDriver(driver);
+          availableDrivers!.removeAt(0);
+        } else {
+          displayToastMessage(
+              "No driver found with the selected car type, try again", context);
+        }
+      } else {
+        displayToastMessage(
+              "No Shuttle Found, try again", context);
+        // return;
+      }
+    });
+    
+    
   }
 
   void notifyDriver(NearByAvailableDrivers driver) {
