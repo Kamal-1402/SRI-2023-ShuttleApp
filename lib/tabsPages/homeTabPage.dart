@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../Assistants/assitantMethods.dart';
 import '../Models/drivers.dart';
 import '../Notifications/pushNotificationService.dart';
 
@@ -98,7 +99,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     PushNotificationService pushNotificationService = PushNotificationService();
     pushNotificationService.initialize(context);
     pushNotificationService.getToken();
-    // AssistantMethods.retrieveHistoryInfo(context);
+    AssistantMethods.retrieveHistoryInfo(context);
     // setState(() {});
   }
 

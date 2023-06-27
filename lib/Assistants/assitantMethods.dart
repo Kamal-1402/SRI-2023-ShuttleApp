@@ -18,6 +18,7 @@ import '../Models/address.dart';
 import '../Models/allUsers.dart';
 import '../configMaps.dart';
 import '../Models/directDetails.dart';
+import '../main.dart';
 
 // import '../Models/configMaps.dart' as config show mapKey;
 // configMaps config = config();
@@ -166,5 +167,42 @@ class AssistantMethods {
     homeTabPageStreamSubscription!.resume();
     Geofire.setLocation(currentfirebaseUser!.uid, currentPosition!.latitude,
         currentPosition!.longitude);
+  }
+
+  static void retrieveHistoryInfo(context) {
+    //retrieve and display earnings
+    driversRef
+        .child(currentfirebaseUser!.uid)
+        .child("earnings")
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        String earnings = databaseEvent.snapshot.value.toString();
+        Provider.of<AppData>(context, listen: false).updateEarnings(earnings);
+      }
+    });
+    //retrieve and display trip history
+    driversRef
+        .child(currentfirebaseUser!.uid)
+        .child("history")
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        //update total number of trip counts to provide
+        // a value for the trip count
+        Map<dynamic, dynamic> keys = databaseEvent.snapshot.value;
+        int tripCount = keys.length;
+        Provider.of<AppData>(context, listen: false)
+            .updateTripsCount(tripCount);
+        //update trip keys to provide a value for the trip keys
+        List<String> tripHistoryKeys = [];
+        keys.forEach((key, value) {
+          tripHistoryKeys.add(key);
+        });
+        Provider.of<AppData>(context, listen: false)
+            .updateTripKeys(tripHistoryKeys);
+        getHistoryData(context);
+      }
+    });
   }
 }

@@ -87,6 +87,9 @@ flutter:
       - images/pickicon.png
       - images/desticon.png
       - images/Shuttle.jpg
+      - images/bike.png
+      - images/ubergo.png
+      - images/uberx.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
