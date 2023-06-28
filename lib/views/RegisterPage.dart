@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           });
                           displayToastMessage('User created successfully', context);
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login/', (route) => false);
+                              '/Home/MapGoogle/', (route) => false);
 
               
                       } on FirebaseAuthException catch (e) {

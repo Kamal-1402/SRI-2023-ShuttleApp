@@ -111,6 +111,11 @@ class _loginPageState extends State<loginPage> {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                   '/Home/MapGoogle/', (route) => false);
                             }
+                            else{
+                              displayToastMessage("Please verify your email", context);
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/login/EmailVerify/', (route) => false);
+                            }
                           }
                         }); //as FutureOr Function(DatabaseEvent value));
                       } on FirebaseAuthException catch (e) {
