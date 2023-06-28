@@ -13,8 +13,8 @@ class CarInfo extends StatelessWidget {
   final TextEditingController carNumberTextEditingController =TextEditingController();
   final TextEditingController carColorTextEditingController =TextEditingController();
   final TextEditingController carModelTextEditingController =TextEditingController();
+  final TextEditingController carTypeTextEditingController =TextEditingController();
 
-  @override
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,17 @@ class CarInfo extends StatelessWidget {
                       ),
                       style: TextStyle(fontSize: 15),
                     ),
-                    SizedBox(height: 42,),
+                    SizedBox(height: 10,),
+                    TextField(
+                      controller: carTypeTextEditingController,
+                      decoration:const InputDecoration(
+                        labelText: "Shuttle Type",
+                        hintText: "e.g. auto,van,bus",
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
+                      ),
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(height: 32,),
 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -73,6 +83,9 @@ class CarInfo extends StatelessWidget {
                           else if(carColorTextEditingController.text.isEmpty){
                             displayToastMessage("Please write Shuttle Color", context);
                           }
+                          else if(carTypeTextEditingController.text.isEmpty){
+                            displayToastMessage("Please write Shuttle Type", context);
+                          }
                           else{
                             saveDriverCarInfo(context);
                           }
@@ -83,7 +96,7 @@ class CarInfo extends StatelessWidget {
                             borderRadius: BorderRadius.circular(24),
                           ),
                         ),
-                        child:Padding(
+                        child:const Padding(
                           padding: EdgeInsets.all(17),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -121,6 +134,7 @@ class CarInfo extends StatelessWidget {
       "car_color": carColorTextEditingController.text,
       "car_number": carNumberTextEditingController.text,
       "car_model": carModelTextEditingController.text,
+      "type": carTypeTextEditingController.text,
     };
     driversRef.child(userId).child("car_details").set(carInfoMap);
     Navigator.pushNamedAndRemoveUntil(context, "/Home/MapPage/", (route) => false);
