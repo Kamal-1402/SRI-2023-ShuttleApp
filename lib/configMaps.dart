@@ -25,6 +25,11 @@ StreamSubscription<Position>? rideStreamSubscription;
 Position? currentPosition;
 
 Drivers? driversInformation;
+
+String title = "";
+double starCounter = 0.0;
+
+String rideType = "";
 // config userConfig = config();
 // void configureMap() {
 //   userConfig.mapapikey = mapkey;

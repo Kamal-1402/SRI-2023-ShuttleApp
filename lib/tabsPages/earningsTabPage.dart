@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer' as dev show log;
 import '../DataHandler/appData.dart';
+import '../views/HistoryScreen.dart';
 
 class EarningTabPage extends StatelessWidget {
   const EarningTabPage({super.key});
@@ -39,7 +40,9 @@ class EarningTabPage extends StatelessWidget {
       ),
       TextButton(
           onPressed: () {
-            dev.log("go to the history page");
+            // dev.log("go to the history page");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const HistoryScreen()));
           },
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30),
@@ -53,13 +56,15 @@ class EarningTabPage extends StatelessWidget {
                   width: 16,
                 ),
                 Text(
-                  "Cash out",
+                  "Total Trips",
                   style: TextStyle(fontSize: 16),
                 ),
                 Expanded(
                   child: Container(
                       child: Text(
-                    "5",
+                    Provider.of<AppData>(context, listen: false)
+                        .countTrips
+                        .toString(),
                     textAlign: TextAlign.end,
                     style: TextStyle(fontSize: 16),
                   )),

@@ -11,11 +11,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:latlng/latlng.dart';
 import 'package:driver_app/Assistants/requestAssitant.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../DataHandler/appData.dart';
 import '../Models/address.dart';
 import '../Models/allUsers.dart';
+import '../Models/history.dart';
 import '../configMaps.dart';
 import '../Models/directDetails.dart';
 import '../main.dart';
@@ -96,6 +98,18 @@ class AssistantMethods {
     // 1$ = 80 RS
     double totalLocalAmount = totalFareAmount * 80;
 
+    if(rideType=="bus")
+    {
+      totalLocalAmount=totalLocalAmount*0.5;
+    }
+    if(rideType=="van")
+    {
+      totalLocalAmount=totalLocalAmount*0.7;
+    }
+    if(rideType=="auto")
+    {
+      totalLocalAmount=totalLocalAmount;
+    }
     // Extract first two digits after the decimal point
     String localAmountString = totalLocalAmount.toStringAsFixed(2);
     String firstTwoDigits = localAmountString.substring(
@@ -170,6 +184,8 @@ class AssistantMethods {
   }
 
   static void retrieveHistoryInfo(context) {
+
+    
     //retrieve and display earnings
     driversRef
         .child(currentfirebaseUser!.uid)
@@ -181,6 +197,7 @@ class AssistantMethods {
         Provider.of<AppData>(context, listen: false).updateEarnings(earnings);
       }
     });
+
     //retrieve and display trip history
     driversRef
         .child(currentfirebaseUser!.uid)
@@ -190,10 +207,10 @@ class AssistantMethods {
       if (databaseEvent.snapshot.value != null) {
         //update total number of trip counts to provide
         // a value for the trip count
-        Map<dynamic, dynamic> keys = databaseEvent.snapshot.value;
+        Map<dynamic, dynamic> keys = databaseEvent.snapshot.value as Map;
         int tripCount = keys.length;
         Provider.of<AppData>(context, listen: false)
-            .updateTripsCount(tripCount);
+            .updateTripsCounter(tripCount);
         //update trip keys to provide a value for the trip keys
         List<String> tripHistoryKeys = [];
         keys.forEach((key, value) {
@@ -201,8 +218,28 @@ class AssistantMethods {
         });
         Provider.of<AppData>(context, listen: false)
             .updateTripKeys(tripHistoryKeys);
-        getHistoryData(context);
+        obtainTripRequestHistoryData(context);
       }
     });
+  }
+
+  static void obtainTripRequestHistoryData(context) {
+    var keys = Provider.of<AppData>(context, listen: false).tripHistoryKeys;
+    for (String key in keys) {
+      newRequestsRef.child(key).once().then((DatabaseEvent databaseEvent) {
+        if (databaseEvent.snapshot.value != null) {
+          var history = History.fromSnapshot(databaseEvent.snapshot);
+          Provider.of<AppData>(context, listen: false)
+              .updateTripHistoryData(history);
+        }
+      });
+    }
+  }
+
+  static String formatTripDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    String formattedDate =
+        "${DateFormat.MMMd().format(dateTime)}, ${DateFormat.y().format(dateTime)} - ${DateFormat.jm().format(dateTime)}";
+    return formattedDate;
   }
 }

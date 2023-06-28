@@ -1,5 +1,6 @@
 import 'package:driver_app/AllWidgets/HorizontalLine.dart';
 import 'package:driver_app/Assistants/assitantMethods.dart';
+import 'package:driver_app/configMaps.dart';
 import 'package:flutter/material.dart';
 
 class CollectFareDialog extends StatelessWidget {
@@ -27,7 +28,7 @@ class CollectFareDialog extends StatelessWidget {
           children: [
             SizedBox(height: 22.0),
             Text(
-              'Trip Fare',
+              'Trip Fare(' + rideType.toString() + ')',
               style: TextStyle(fontSize: 20.0, fontFamily: 'Brand-Bold'),
             ),
             SizedBox(height: 22.0),

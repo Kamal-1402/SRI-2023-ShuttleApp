@@ -39,6 +39,69 @@ class _HomeTabPageState extends State<HomeTabPage> {
     getCurrentDriverInfo();
   }
 
+  void getRideType() async {
+    driversRef
+        .child(currentfirebaseUser!.uid)
+        .child("car_details")
+        .child("type")
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        setState(() {
+          rideType = databaseEvent.snapshot.value.toString();
+        });
+      }
+    });
+  }
+  void getRating()
+  {
+    // update Ratings
+    driversRef
+        .child(currentfirebaseUser!.uid)
+        .child("ratings")
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        String ratings = databaseEvent.snapshot.value.toString();
+        setState(() {
+          starCounter = double.parse(ratings);
+        });
+
+        if (starCounter <= 1.5) {
+          setState(() {
+            title = "Very Bad";
+          });
+          return;
+        }
+        if (starCounter <= 2.5) {
+          setState(() {
+            title = "Bad";
+          });
+          return;
+        }
+        if (starCounter <= 3.5) {
+          setState(() {
+            title = "Good";
+          });
+          return;
+        }
+        if (starCounter <= 4.5) {
+          setState(() {
+            title = "Very Good";
+          });
+          return;
+        }
+        if (starCounter <= 5) {
+          setState(() {
+            title = "Excellent";
+          });
+          return;
+        }
+        
+      }
+    });
+  }
+
   Future<bool> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -100,6 +163,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
     pushNotificationService.initialize(context);
     pushNotificationService.getToken();
     AssistantMethods.retrieveHistoryInfo(context);
+    getRating();
+    getRideType();
     // setState(() {});
   }
 
@@ -191,7 +256,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                             ),
                             Icon(
                               Icons.phone_android,
-                              color: Colors.black,
+                              color: Colors.white,
                               size: 26,
                             ),
                           ],
