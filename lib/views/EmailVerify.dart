@@ -37,6 +37,9 @@ class _EmailVerifyState extends State<EmailVerify> {
               await CurrUser?.reload();
               if (CurrUser?.emailVerified ?? false) {
                 dev.log("you are verified");
+                displayToastMessage("you are verified", context);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/Home/MapGoogle/', (route) => false);
               } else {
                 dev.log("you are not verified");
               }
@@ -47,4 +50,12 @@ class _EmailVerifyState extends State<EmailVerify> {
       ),
     );
   }
+}
+void displayToastMessage(String message, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
+  // Navigator.push(context,"somtuind");
 }

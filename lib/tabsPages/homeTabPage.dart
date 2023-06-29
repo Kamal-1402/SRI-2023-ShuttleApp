@@ -250,6 +250,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                             Text(
                               driverStatusText,
                               style: TextStyle(
+                                color: Colors.white,
                                 fontSize: 20,
                                 fontFamily: "Brand Bold",
                               ),

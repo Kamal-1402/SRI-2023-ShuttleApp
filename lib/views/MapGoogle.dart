@@ -27,7 +27,7 @@ class _MapGoogleState extends State<MapGoogle>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    tabController = TabController(length: 4, vsync: this, initialIndex: 0);
   }
 
   @override

@@ -112,13 +112,13 @@ class ProfileTabPage extends StatelessWidget {
 class InfoCard extends StatelessWidget {
   final String? text;
   final IconData? icon;
-  final Function? onPressed;
+  final void Function()? onPressed;
   const InfoCard({super.key, this.text, this.icon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed!(),
+      onTap: onPressed,
       child: Card(
         color: Colors.white,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
