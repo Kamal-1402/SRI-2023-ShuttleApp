@@ -37,6 +37,8 @@ class _EmailVerifyState extends State<EmailVerify> {
               await CurrUser?.reload();
               if (CurrUser?.emailVerified ?? false) {
                 dev.log("you are verified");
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/Home/MapGoogle/', (route) => false);
               } else {
                 dev.log("you are not verified");
               }
