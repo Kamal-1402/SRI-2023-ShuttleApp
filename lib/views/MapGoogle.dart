@@ -91,7 +91,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   List<NearByAvailableDrivers>? availableDrivers;
   // StreamSubscription<Event>? rideStreamSubscription;
   StreamSubscription<DatabaseEvent>? rideStreamSubscription;
-  String? uName="";
+  String? uName = "";
 
   @override
   void initState() {
@@ -371,7 +371,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       dev.log("This is your address:: " + address);
 
       initGeoFIreListner();
-      uName=userCurrentInfo!.displayName;
+      uName = userCurrentInfo!.displayName;
     }
   }
 
@@ -657,8 +657,6 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
                   child: Column(
                     children: [
-
-
                       // auto Ride
                       GestureDetector(
                         onTap: () {
@@ -682,7 +680,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                             child: Row(
                               children: [
                                 Image.asset(
-                                  "images/bike.jpg",
+                                  "images/bike.png",
                                   height: 70,
                                   width: 80,
                                 ),
@@ -750,7 +748,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                             child: Row(
                               children: [
                                 Image.asset(
-                                  "images/ubergo.jpg",
+                                  "images/ubergo.png",
                                   height: 70,
                                   width: 80,
                                 ),
@@ -818,7 +816,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                             child: Row(
                               children: [
                                 Image.asset(
-                                  "images/uberx.jpg",
+                                  "images/uberx.png",
                                   height: 70,
                                   width: 80,
                                 ),
@@ -880,7 +878,6 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                           ],
                         ),
                       ),
-                      
                     ],
                   ),
                 ),
@@ -1242,7 +1239,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     Geofire.queryAtLocation(
             _currentPosition!.latitude, _currentPosition!.longitude, 15)!
         .listen((map) {
-      dev.log(map);
+      dev.log(map.toString());
+      dev.log("This is from 1245 line in MapGoogle");
       if (map != null) {
         var callBack = map["callBack"];
         switch (callBack) {
@@ -1332,8 +1330,12 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       return;
     }
     var driver = availableDrivers?[0];
-    driversRef.child(driver!.key!).child("car_details").child("type").once()
-        .then((DatabaseEvent databaseEvent) async{
+    driversRef
+        .child(driver!.key!)
+        .child("car_details")
+        .child("type")
+        .once()
+        .then((DatabaseEvent databaseEvent) async {
       if (databaseEvent.snapshot.value != null) {
         String carType = databaseEvent.snapshot.value.toString();
         if (carType == carRideType) {
@@ -1345,13 +1347,10 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
               "No driver found with the selected car type, try again", context);
         }
       } else {
-        displayToastMessage(
-              "No Shuttle Found, try again", context);
+        displayToastMessage("No Shuttle Found, try again", context);
         // return;
       }
     });
-    
-    
   }
 
   void notifyDriver(NearByAvailableDrivers driver) {
