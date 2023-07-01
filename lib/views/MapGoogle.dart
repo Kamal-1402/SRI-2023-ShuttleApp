@@ -1067,9 +1067,9 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                           padding: EdgeInsets.symmetric(horizontal: 20),
                           child: TextButton(
                             onPressed: () async {
-                              var url = 'tel:$driverphone';
-                              if (await canLaunchUrl(url as Uri)) {
-                                await launchUrl(url as Uri);
+                              var url = Uri.parse('tel:$driverphone');
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url);
                               } else {
                                 throw 'Could not launch $url';
                               }
@@ -1239,8 +1239,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
     Geofire.queryAtLocation(
             _currentPosition!.latitude, _currentPosition!.longitude, 15)!
         .listen((map) {
-      dev.log(map.toString());
-      dev.log("This is from 1245 line in MapGoogle");
+      // dev.log(map.toString());
+      // dev.log("This is from 1245 line in MapGoogle");
       if (map != null) {
         var callBack = map["callBack"];
         switch (callBack) {
@@ -1381,7 +1381,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
         if (state != "requesting") {
           driversRef.child(driver.key!).child("newRide").set("cancelled");
           driversRef.child(driver.key!).child("newRide").onDisconnect();
-          driverRequestTimeOut = 40;
+          driverRequestTimeOut = 4000;
           timer.cancel();
         }
         driverRequestTimeOut--;
@@ -1389,7 +1389,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
         driversRef.child(driver.key!).child("newRide").onValue.listen((event) {
           if (event.snapshot.value.toString() == "accepted") {
             driversRef.child(driver.key!).child("newRide").onDisconnect();
-            driverRequestTimeOut = 40;
+            driverRequestTimeOut = 4000;
             timer.cancel();
           }
         });
@@ -1398,7 +1398,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
           driversRef.child(driver.key!).child("newRide").onDisconnect();
           cancelRideRequest();
           resetApp();
-          driverRequestTimeOut = 40;
+          driverRequestTimeOut = 4000;
           timer.cancel();
 
           searchNearestDriver();

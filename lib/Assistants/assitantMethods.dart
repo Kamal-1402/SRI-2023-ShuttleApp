@@ -81,6 +81,8 @@ class AssistantMethods {
     directionDetails.encodedPoints = route['geometry'];
     directionDetails.distanceText = route['distance'];
     directionDetails.durationText = route['duration'];
+    
+
     directionDetails.durationValue = (route['duration']) / 60;
     directionDetails.distanceValue = (route['distance']) / 1000;
     return directionDetails;
@@ -167,13 +169,17 @@ class AssistantMethods {
       'notification': notificationMap,
       'data': dataMap,
       'priority': 'high',
-      'to': token
+      'to': token,
     };
     var res = await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      // Uri.parse(
+          // 'https://fcm.googleapis.com/v1/appshuttle-12d39/messages:send'),
+          // 'https://fcm.googleapis.com/v1/project-861632027209/messages:send'),
+          // https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send
       headers: headerMap,
       body: jsonEncode(sendNotificationMap),
     );
-    dev.log(res.body.toString());
+    dev.log(res.body);
   }
 }
