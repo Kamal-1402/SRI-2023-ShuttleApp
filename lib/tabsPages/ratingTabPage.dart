@@ -34,24 +34,27 @@ class _RatingTabPageState extends State<RatingTabPage> {
               SizedBox(height: 22.0),
               const Text(
                 'Your Rating',
-                style: TextStyle(fontSize: 20.0, fontFamily: 'Brand-Bold',color: Colors.black),
+                style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Brand-Bold',
+                    color: Colors.black),
               ),
               SizedBox(height: 22.0),
-              const Divider(height: 2,thickness: 2,),
+              const Divider(
+                height: 2,
+                thickness: 2,
+              ),
               SizedBox(height: 16.0),
-              
-              
               AwesomeStarRating(
-                  starCount: 5,
-                  allowHalfRating: true,
-                  rating: starCounter,
-                  size: 30.0,
-                  isReadOnly: true,
-                  color: Colors.green,
-                  borderColor: Colors.orange,
-                ),
+                starCount: 5,
+                allowHalfRating: true,
+                rating: starCounter,
+                size: 30.0,
+                // isReadOnly: true,
+                color: Colors.green,
+                borderColor: Colors.orange,
+              ),
               SizedBox(height: 14.0),
-              
               Text(
                 title,
                 style: TextStyle(
@@ -61,7 +64,6 @@ class _RatingTabPageState extends State<RatingTabPage> {
                 ),
               ),
               SizedBox(height: 16.0),
-              
             ],
           ),
         ),
