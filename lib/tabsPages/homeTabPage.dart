@@ -28,15 +28,16 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   
 
-  String driverStatusText = "Offline Now - Go Online ";
+  
 
-  Color driverStatusColor = Colors.black;
+  
 
   bool isDriverAvailable = false;
   @override
   void initState() {
     super.initState();
     getCurrentDriverInfo();
+    // dev.log("getCurrentDriverInfo did not work");
   }
 
   void getRideType() async {
@@ -149,7 +150,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     }
   }
 
-  void getCurrentDriverInfo() async {
+  Future<void> getCurrentDriverInfo() async {
     currentfirebaseUser = await FirebaseAuth.instance.currentUser!;
     driversRef
         .child(currentfirebaseUser!.uid)
@@ -157,11 +158,17 @@ class _HomeTabPageState extends State<HomeTabPage> {
         .then((DatabaseEvent databaseEvent) {
       if (databaseEvent.snapshot.value != null) {
         driversInformation = Drivers.fromSnapshot(databaseEvent.snapshot);
+        // dev.log(driversInformation!.id.toString() + "line 161 fot hometabpage");
       }
     });
+    // dev.log(driversInformation!.displayName.toString() + "line 163 fot hometabpage");
+    // dev.log("line 164 from hometabpage ");
     PushNotificationService pushNotificationService = PushNotificationService();
+    
     pushNotificationService.initialize(context);
+    // dev.log("line 169 from hometabpage ");
     pushNotificationService.getToken();
+    
     AssistantMethods.retrieveHistoryInfo(context);
     getRating();
     getRideType();

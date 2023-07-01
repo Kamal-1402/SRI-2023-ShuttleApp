@@ -81,8 +81,10 @@ class AssistantMethods {
     //     res["routes"][0]["legs"][0]["duration"]["value"];
 
     directionDetails.encodedPoints = route['geometry'];
-    directionDetails.distanceText = route['distance'];
-    directionDetails.durationText = route['duration'];
+    // directionDetails.distanceText = route['distance'];
+    // directionDetails.durationText = route['duration'];
+    directionDetails.distanceText = double.parse(route['distance'].toString());
+    directionDetails.durationText = double.parse(route['duration'].toString());
     directionDetails.durationValue = (route['duration']) / 60;
     directionDetails.distanceValue = (route['distance']) / 1000;
     return directionDetails;

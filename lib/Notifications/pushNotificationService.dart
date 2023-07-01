@@ -21,14 +21,20 @@ class PushNotificationService {
     //   firebaseMessaging
     //       .requestNotificationPermissions(IosNotificationSettings());
     // }
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   dev.log('A new onMessageOpenedApp event was published!');
+    //   retrieveRideRequestInfo(getRideRequestId(message.data), context);
+    //   // Navigator.pushNamed(context, '/message',
+    //   //     arguments: MessageArguments(message, true));
+    // });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the message
       retrieveRideRequestInfo(getRideRequestId(message.data), context);
     });
     // onLanuch
-    FirebaseMessaging.onBackgroundMessage((message) =>
-        retrieveRideRequestInfo(getRideRequestId(message.data), context)
-            as Future<void>);
+    // FirebaseMessaging.onBackgroundMessage((message) =>
+    //     retrieveRideRequestInfo(getRideRequestId(message.data), context)
+    //         as Future<void>);
     // onResum
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       // Handle the message
@@ -92,7 +98,7 @@ class PushNotificationService {
   String getRideRequestId(Map<String, dynamic> message) {
     String rideRequestId = '';
     if (Platform.isAndroid) {
-      rideRequestId = message['data']['ride_request_id'];
+      rideRequestId = message['ride_request_id'];
       dev.log('ride_request_id: $rideRequestId', name: 'ride_request_id');
     } else {
       rideRequestId = message['ride_request_id'];

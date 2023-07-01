@@ -144,9 +144,9 @@ class _NewRideScreenState extends State<NewRideScreen> {
             },
           ),
           Positioned(
-            top: 0,
             left: 0,
             right: 0,
+            bottom: 0,
             child: Container(
               // height: 300,
               decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                   )
                 ],
               ),
-              height: 270,
+              height: 350,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
                 child: Column(
@@ -194,7 +194,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: 26,
+                      height: 20,
                     ),
                     Row(
                       children: [
@@ -211,7 +211,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                             child: Text(
                               widget.rideDetails!.pickup_address!,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 15,
                               ),
                             ),
                           ),
@@ -244,10 +244,10 @@ class _NewRideScreenState extends State<NewRideScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: 26,
+                      height: 18,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ElevatedButton(
                         onPressed: () async {
                           if (status == "accepted") {
@@ -333,7 +333,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => const ProgressDialog(
-              message: "Please wait... this is MapGoogle",
+              message: "Please wait... this is newRideScreen",
             ));
     var details = await AssistantMethods.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);

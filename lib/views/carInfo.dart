@@ -137,7 +137,7 @@ class CarInfo extends StatelessWidget {
       "type": carTypeTextEditingController.text,
     };
     driversRef.child(userId).child("car_details").set(carInfoMap);
-    Navigator.pushNamedAndRemoveUntil(context, "/Home/MapPage/", (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, "/Home/MapGoogle/", (route) => false);
   }
 }
 void displayToastMessage(String message, BuildContext context) {
