@@ -27,10 +27,9 @@ Future<void> main() async {
 
   runApp(const MyApp());
 }
-DatabaseReference usersRef =
-    FirebaseDatabase.instance.ref().child("users");
-DatabaseReference driversRef =
-    FirebaseDatabase.instance.ref().child("drivers");
+
+DatabaseReference usersRef = FirebaseDatabase.instance.ref().child("users");
+DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -40,6 +39,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<AppData>(
       create: (context) => AppData(),
       child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -93,9 +93,9 @@ class Authentication extends StatelessWidget {
                       const Text("you are not logged in"),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushNamedAndRemoveUntil('/login/', (route) => false);
-                
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login/', (route) => false);
+
                           // const EmailVerify();
                         },
                         child: const Text('click here to login'),

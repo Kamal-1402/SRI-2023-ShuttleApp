@@ -33,7 +33,8 @@ class AssistantMethods {
     var response = await RequestAssistant.getRequest(url);
 
     if (response != "failed") {
-      placeAddress = response["features"][0]["place_name"];
+      placeAddress = response["features"][0]["properties"]["address"];
+
       // st1 = response["results"][0]["address_components"][3]["long_name"];
       // st2 = response["results"][0]["address_components"][4]["long_name"];
       // st3 = response["results"][0]["address_components"][5]["long_name"];
@@ -81,7 +82,6 @@ class AssistantMethods {
     directionDetails.encodedPoints = route['geometry'];
     directionDetails.distanceText = route['distance'];
     directionDetails.durationText = route['duration'];
-    
 
     directionDetails.durationValue = (route['duration']) / 60;
     directionDetails.distanceValue = (route['distance']) / 1000;
@@ -174,9 +174,9 @@ class AssistantMethods {
     var res = await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       // Uri.parse(
-          // 'https://fcm.googleapis.com/v1/appshuttle-12d39/messages:send'),
-          // 'https://fcm.googleapis.com/v1/project-861632027209/messages:send'),
-          // https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send
+      // 'https://fcm.googleapis.com/v1/appshuttle-12d39/messages:send'),
+      // 'https://fcm.googleapis.com/v1/project-861632027209/messages:send'),
+      // https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send
       headers: headerMap,
       body: jsonEncode(sendNotificationMap),
     );
