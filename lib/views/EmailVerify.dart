@@ -16,37 +16,73 @@ class EmailVerify extends StatefulWidget {
 class _EmailVerifyState extends State<EmailVerify> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Email Verify'),
-      ),
-      body: Column(
-        children: [
-          const Text("Please Verify Your Email"),
-          ElevatedButton(
-            onPressed: () async {
-              final CurrUser = FirebaseAuth.instance.currentUser;
-              await CurrUser?.sendEmailVerification();
-              dev.log("Email Sent");
-            },
-            child: const Text("Send Email"),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Email Verify'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Please Verify Your Email",
+                style: TextStyle(fontSize: 24),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final CurrUser = FirebaseAuth.instance.currentUser;
+                    await CurrUser?.sendEmailVerification();
+                    dev.log("Email Sent");
+                  },
+                  child: const Text(
+                    "Send Email",
+                    style: TextStyle(fontSize: 22),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final CurrUser = FirebaseAuth.instance.currentUser;
+                    await CurrUser?.reload();
+                    if (CurrUser?.emailVerified ?? false) {
+                      dev.log("you are verified");
+                      displayToastMessage("you are verified", context);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/Home/MapGoogle/', (route) => false);
+                    } else {
+                      dev.log("you are not verified");
+                    }
+                  },
+                  child: const Text(
+                    "Reload",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final CurrUser = FirebaseAuth.instance.currentUser;
-              await CurrUser?.reload();
-              if (CurrUser?.emailVerified ?? false) {
-                dev.log("you are verified");
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/Home/MapGoogle/', (route) => false);
-              } else {
-                dev.log("you are not verified");
-              }
-            },
-            child: const Text("Reload"),
-          ),
-        ],
+        ),
       ),
     );
   }
+}
+
+void displayToastMessage(String message, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
+  // Navigator.push(context,"somtuind");
 }

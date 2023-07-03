@@ -8,8 +8,8 @@ class Home extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: Center(
-        child:const Text(
+      body: const Center(
+        child:Text(
           'Welcome to Home',
           style: TextStyle(fontSize: 24),
         ),

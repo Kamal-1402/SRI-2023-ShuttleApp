@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:learn_flutter/Models/address.dart';
+import 'package:UserApp/Models/address.dart';
 
 class AppData extends ChangeNotifier {
   Address pickUpLocation = Address();

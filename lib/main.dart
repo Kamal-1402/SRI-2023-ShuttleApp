@@ -2,16 +2,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:learn_flutter/DataHandler/appData.dart';
-import 'package:learn_flutter/firebase_options.dart';
-import 'package:learn_flutter/views/EmailVerify.dart';
-import 'package:learn_flutter/views/HomePage.dart';
-import 'package:learn_flutter/views/MapGoogle.dart';
-import 'package:learn_flutter/views/MapPage.dart';
-import 'package:learn_flutter/views/ProfilePage.dart';
-import 'package:learn_flutter/views/RegisterPage.dart';
-import 'package:learn_flutter/views/loginPage.dart';
-import 'package:learn_flutter/UI/map_base.dart';
+import 'package:UserApp/DataHandler/appData.dart';
+import 'package:UserApp/firebase_options.dart';
+import 'package:UserApp/views/EmailVerify.dart';
+import 'package:UserApp/views/HomePage.dart';
+import 'package:UserApp/views/MapGoogle.dart';
+import 'package:UserApp/views/MapPage.dart';
+import 'package:UserApp/views/ProfilePage.dart';
+import 'package:UserApp/views/RegisterPage.dart';
+import 'package:UserApp/views/loginPage.dart';
+import 'package:UserApp/UI/map_base.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer' as dev show log;
 
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             "/register/": (context) => const RegisterPage(),
             "/login/EmailVerify/": (context) => const EmailVerify(),
             "/Home/": (context) => const HomePage(),
-            "/Home/profile/": (context) => const ProfilePage(),
+            "/Home/profile/": (context) => const ProfileTabPage(),
             "/Home/MapPage/": (context) => const MapPage(),
             // "/api/search/": (context) => MapBase(),
             "/Home/MapGoogle/": (context) => const MapGoogle(),

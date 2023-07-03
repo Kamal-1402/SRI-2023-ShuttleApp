@@ -11,7 +11,7 @@
 
 
     <application
-        android:label="learn_flutter"
+        android:label="Easy Ride"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

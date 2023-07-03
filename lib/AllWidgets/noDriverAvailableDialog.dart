@@ -14,7 +14,7 @@ class NoDriverAvailableDialog extends StatelessWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.all(4.0),
+        margin: const EdgeInsets.all(4.0),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -51,9 +51,9 @@ class NoDriverAvailableDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24.0),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(17.0),
-                    child:const Row(
+                  child: const Padding(
+                    padding: EdgeInsets.all(17.0),
+                    child:Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(

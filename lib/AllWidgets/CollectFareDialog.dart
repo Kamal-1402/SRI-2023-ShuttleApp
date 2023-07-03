@@ -1,5 +1,5 @@
-import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
-import 'package:learn_flutter/Assistants/assitantMethods.dart';
+import 'package:UserApp/AllWidgets/HorizontalLine.dart';
+import 'package:UserApp/Assistants/assitantMethods.dart';
 import 'package:flutter/material.dart';
 
 class CollectFareDialog extends StatelessWidget {
@@ -16,7 +16,7 @@ class CollectFareDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       child: Container(
-        margin: EdgeInsets.all(4.0),
+        margin: const EdgeInsets.all(4.0),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -25,29 +25,29 @@ class CollectFareDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 22.0),
-            Text(
+            const SizedBox(height: 22.0),
+            const Text(
               'Trip Fare',
               style: TextStyle(fontSize: 20.0, fontFamily: 'Brand-Bold'),
             ),
-            SizedBox(height: 22.0),
+            const SizedBox(height: 22.0),
             const Divider(height: 2,thickness: 2,),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Text(
-              '\$$fareAmount',
-              style: TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
+              '$fareAmount ₹',
+              style: const TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
             ),
-            SizedBox(height: 16.0),
-            Padding(
+            const SizedBox(height: 16.0),
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'This is the total amount, it has been charged to the rider',
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.pop(context,"close");
@@ -55,7 +55,7 @@ class CollectFareDialog extends StatelessWidget {
 
                 },
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
                   backgroundColor: Colors.deepPurpleAccent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
@@ -74,7 +74,7 @@ class CollectFareDialog extends StatelessWidget {
                             color: Colors.white),
                       ),
                       Icon(
-                        Icons.attach_money,
+                        Icons.payment,
                         color: Colors.white,
                         size: 26.0,
                       ),
@@ -83,7 +83,7 @@ class CollectFareDialog extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
           ],
         ),
       ),

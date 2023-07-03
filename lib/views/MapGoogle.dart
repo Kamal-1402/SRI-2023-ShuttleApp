@@ -14,14 +14,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:flutter_map/src/layer/tile_layer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:learn_flutter/AllWidgets/CollectFareDialog.dart';
-import 'package:learn_flutter/AllWidgets/HorizontalLine.dart';
-import 'package:learn_flutter/Assistants/assitantMethods.dart';
-import 'package:learn_flutter/Models/directDetails.dart';
-import 'package:learn_flutter/main.dart';
-import 'package:learn_flutter/views/loginPage.dart';
-import 'package:learn_flutter/views/ratingScreen.dart';
-import 'package:learn_flutter/views/searchScreen.dart';
+import 'package:UserApp/AllWidgets/CollectFareDialog.dart';
+import 'package:UserApp/AllWidgets/HorizontalLine.dart';
+import 'package:UserApp/Assistants/assitantMethods.dart';
+import 'package:UserApp/Models/directDetails.dart';
+import 'package:UserApp/main.dart';
+import 'package:UserApp/views/loginPage.dart';
+import 'package:UserApp/views/ratingScreen.dart';
+import 'package:UserApp/views/searchScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -87,7 +87,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
 
   double rideDetailsContainerHeight = 0;
   double requestRideContainerHeight = 0;
-  double searchContainerHeight = 230.0;
+  double searchContainerHeight = 250.0;
   String? state = "normal";
 
   List<NearByAvailableDrivers>? availableDrivers;
@@ -105,7 +105,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   void resetApp() {
     setState(() {
       drawerOpen = true;
-      searchContainerHeight = 230.0;
+      searchContainerHeight = 250.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 300.0;
       requestRideContainerHeight = 0;
@@ -311,7 +311,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       requestRideContainerHeight = 0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 280;
-      driverDetailsContainerHeight = 310;
+      driverDetailsContainerHeight = 330;
       // drawerOpen = true;
     });
   }
@@ -412,7 +412,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                     // Redirect to another page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                      MaterialPageRoute(builder: (context) => ProfileTabPage()),
                     );
                   },
                   child: const ListTile(
@@ -740,13 +740,13 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   const Expanded(child: SizedBox()),
-                                  Text(
-                                    ((tripDirectionDetails != null)
-                                        ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
-                                        : ''),
-                                    style: const TextStyle(
-                                        fontSize: 18, fontFamily: "Brand-Bold"),
-                                  ),
+                                  // Text(
+                                  //   ((tripDirectionDetails != null)
+                                  //       ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
+                                  //       : ''),
+                                  //   style: const TextStyle(
+                                  //       fontSize: 18, fontFamily: "Brand-Bold"),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -809,13 +809,13 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   const Expanded(child: SizedBox()),
-                                  Text(
-                                    ((tripDirectionDetails != null)
-                                        ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
-                                        : ''),
-                                    style: const TextStyle(
-                                        fontSize: 18, fontFamily: "Brand-Bold"),
-                                  ),
+                                  // Text(
+                                  //   ((tripDirectionDetails != null)
+                                  //       ? 'Rs ${AssistantMethods.calculateFares(tripDirectionDetails!).toString()}'
+                                  //       : ''),
+                                  //   style: const TextStyle(
+                                  //       fontSize: 18, fontFamily: "Brand-Bold"),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -1117,7 +1117,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(8.0),
-                                child: Column(
+                                child: Row(
                                   children: [
                                     Icon(
                                       Icons.call,
@@ -1125,7 +1125,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                                       size: 26,
                                     ),
                                     SizedBox(
-                                      height: 5,
+                                      width: 5,
                                     ),
                                     Text(
                                       "Call Driver",
@@ -1342,7 +1342,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   void createIconMarker() {
     if (nearByIcon == null) {
       ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: const Size(2, 2));
+          createLocalImageConfiguration(context, size: const Size(0.2, 0.2));
       BitmapDescriptor.fromAssetImage(imageConfiguration, "images/car_ios.png")
           .then((value) {
         nearByIcon = value;
@@ -1373,7 +1373,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
         .then((DatabaseEvent databaseEvent) async {
       if (databaseEvent.snapshot.value != null) {
         String carType = databaseEvent.snapshot.value.toString();
-        if (carType == carRideType) {
+        if (carType == carRideType || carType == "auto") {
           dev.log(driver.key.toString());
           notifyDriver(driver);
           availableDrivers!.removeAt(0);
@@ -1418,6 +1418,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
           driversRef.child(driver.key!).child("newRide").onDisconnect();
           driverRequestTimeOut = 240;
           timer.cancel();
+          driversRef.child(driver.key!).child("newRide").set("searching");
         }
         driverRequestTimeOut--;
 
@@ -1437,6 +1438,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
           timer.cancel();
 
           searchNearestDriver();
+          driversRef.child(driver.key!).child("newRide").set("searching");
         }
       });
     });
