@@ -282,8 +282,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
         currentPosition!.longitude);
 
     rideRequestRef.set("searching");
+    
+    rideRequestRef.onValue.listen((event) {
 
-    rideRequestRef.onValue.listen((event) {});
+    });
   }
 
   void getLocationLiveUpdates() {

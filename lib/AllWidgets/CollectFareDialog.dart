@@ -1,6 +1,7 @@
 import 'package:DriverApp/AllWidgets/HorizontalLine.dart';
 import 'package:DriverApp/Assistants/assitantMethods.dart';
 import 'package:DriverApp/configMaps.dart';
+import 'package:DriverApp/main.dart';
 import 'package:flutter/material.dart';
 
 class CollectFareDialog extends StatelessWidget {
@@ -53,7 +54,7 @@ class CollectFareDialog extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.pop(context);
-
+                  driversRef!.child(currentfirebaseUser!.uid).child('newRide').set('searching');
                   AssistantMethods.enableHomeTabLiveLocationUpdates();
                 },
                 style: TextButton.styleFrom(
