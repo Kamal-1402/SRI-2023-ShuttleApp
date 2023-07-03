@@ -42,7 +42,7 @@ class _loginPageState extends State<loginPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Login Demo Home Page'),
+          title: const Text('Login Page'),
         ),
         body: FutureBuilder(
           future: Firebase.initializeApp(
@@ -102,7 +102,7 @@ class _loginPageState extends State<loginPage> {
                             dev.log('user found');
                             dev.log(userCredential.toString());
                             displayToastMessage("You are logged in", context);
-                
+
                             // save user data in realtime
                             usersRef
                                 .child(userCredential.user!.uid)
@@ -113,9 +113,9 @@ class _loginPageState extends State<loginPage> {
                                   dev.log('user verified');
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       '/Home/MapGoogle/', (route) => false);
-                                }
-                                else{
-                                  displayToastMessage("Please verify your email", context);
+                                } else {
+                                  displayToastMessage(
+                                      "Please verify your email", context);
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       '/login/EmailVerify/', (route) => false);
                                 }
@@ -132,7 +132,7 @@ class _loginPageState extends State<loginPage> {
                             dev.log(e.runtimeType.toString());
                             dev.log(e.toString());
                           }
-                
+
                           // Navigate to the second screen using a named route.
                         },
                         child: const Text('login'),

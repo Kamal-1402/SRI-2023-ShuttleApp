@@ -449,7 +449,9 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
         body: Stack(
           children: [
             GoogleMap(
-              padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
+              // padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
+              padding: EdgeInsets.only(
+                  bottom: bottomPaddingOfMap, top: 10, left: 10, right: 10),
               mapType: MapType.normal,
               myLocationButtonEnabled: true,
               zoomControlsEnabled: true,
@@ -476,7 +478,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
 
             // HamburgerButton for Drawer
             Positioned(
-              top: 38,
+              top: 22,
               left: 22,
               child: GestureDetector(
                 onTap: () {

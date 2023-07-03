@@ -54,13 +54,13 @@ class _RegisterPageState extends State<RegisterPage> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 return Padding(
-                  padding: const EdgeInsets.only(left: 14,right: 14),
+                  padding: const EdgeInsets.only(left: 14, right: 14),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextFormField(
                         controller: displayName, // Hides or shows the password
-                        decoration:const InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Username',
                         ),
@@ -99,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: phoneNumber, // Hides or shows the password
-                        decoration:const InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Mobile',
                           prefix: Text('+91 '),
@@ -119,36 +119,33 @@ class _RegisterPageState extends State<RegisterPage> {
                               password: password.text,
                             );
                             dev.log(userCredential.toString());
-                            
-                              
-                              
-                              usersRef.child(userCredential.user!.uid).set({
-                                'displayName': displayName.text.trim(),
-                                'email': email.text.trim(),
-                                'phoneNumber': phoneNumber.text.trim(),
-                                
-                              });
-                              displayToastMessage('User created successfully', context);
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/Home/MapGoogle/', (route) => false);
-                    
-                  
+
+                            usersRef.child(userCredential.user!.uid).set({
+                              'displayName': displayName.text.trim(),
+                              'email': email.text.trim(),
+                              'phoneNumber': phoneNumber.text.trim(),
+                            });
+                            displayToastMessage(
+                                'User created successfully', context);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/Home/MapGoogle/', (route) => false);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'email-already-in-use') {
-                              dev.log('The account already exists for that email.');
+                              dev.log(
+                                  'The account already exists for that email.');
                             }
                           } catch (e) {
                             dev.log(e.toString());
                           }
-                    
+
                           // Navigate to the second screen using a named route.
                         },
                         child: const Text('Register'),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushNamedAndRemoveUntil('/login/', (route) => false);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login/', (route) => false);
                         },
                         child: const Text('already registered? login here'),
                       ),
