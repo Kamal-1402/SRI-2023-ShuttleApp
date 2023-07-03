@@ -15,7 +15,7 @@ class _RatingTabPageState extends State<RatingTabPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black87,
+        backgroundColor: const Color.fromARGB(221, 33, 30, 30),
         body: Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
@@ -23,7 +23,7 @@ class _RatingTabPageState extends State<RatingTabPage> {
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           child: Container(
-            margin: EdgeInsets.all(4.0),
+            margin: const EdgeInsets.all(4.0),
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -32,7 +32,7 @@ class _RatingTabPageState extends State<RatingTabPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 22.0),
+                const SizedBox(height: 22.0),
                 const Text(
                   'Your Rating',
                   style: TextStyle(
@@ -40,12 +40,12 @@ class _RatingTabPageState extends State<RatingTabPage> {
                       fontFamily: 'Brand-Bold',
                       color: Colors.black),
                 ),
-                SizedBox(height: 22.0),
+                const SizedBox(height: 22.0),
                 const Divider(
                   height: 2,
                   thickness: 2,
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 AwesomeStarRating(
                   starCount: 5,
                   allowHalfRating: true,

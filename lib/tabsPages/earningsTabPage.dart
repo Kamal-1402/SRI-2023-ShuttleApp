@@ -48,25 +48,26 @@ class EarningTabPage extends StatelessWidget {
                       builder: (context) => const HistoryScreen()));
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               child: Row(
                 children: [
                   Image.asset(
                     "images/bike.png",
-                    width: 70,
+                    width: 50,
                   ),
                   const SizedBox(
                     width: 16,
                   ),
                   const Text(
-                    "Total Trips",
+                    "Trip History",
                     style: TextStyle(fontSize: 16),
                   ),
                   Expanded(
                     child: Text(
-                      Provider.of<AppData>(context, listen: false)
-                          .countTrips
-                          .toString(),
+                      "Last Rides",
+                      // Provider.of<AppData>(context, listen: false)
+                      //       .countTrips
+                      //     .toString(),
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 16),
                     ),

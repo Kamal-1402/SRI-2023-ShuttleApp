@@ -10,7 +10,7 @@
 
 
     <application
-        android:label="driver_app"
+        android:label="Easy Drive"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -18,7 +18,7 @@ class CollectFareDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       child: Container(
-        margin: EdgeInsets.all(4.0),
+        margin: const EdgeInsets.all(4.0),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -27,7 +27,7 @@ class CollectFareDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 22.0),
+            const SizedBox(height: 22.0),
             const Text(
               'Trip Fare',
               style: TextStyle(fontSize: 20.0, fontFamily: 'Brand-Bold'),
@@ -39,22 +39,25 @@ class CollectFareDialog extends StatelessWidget {
               '$fareAmount ₹',
               style: const TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
             ),
-            SizedBox(height: 16.0),
-            Padding(
+            const SizedBox(height: 16.0),
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'This is the total amount, it has been charged to the rider',
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.pop(context);
-                  driversRef!.child(currentfirebaseUser!.uid).child('newRide').set('searching');
+                  driversRef!
+                      .child(currentfirebaseUser!.uid)
+                      .child('newRide')
+                      .set('searching');
                   AssistantMethods.enableHomeTabLiveLocationUpdates();
                 },
                 style: TextButton.styleFrom(
