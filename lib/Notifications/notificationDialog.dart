@@ -1,6 +1,6 @@
-import 'package:driver_app/Assistants/assitantMethods.dart';
-import 'package:driver_app/Models/ridedetails.dart';
-import 'package:driver_app/configMaps.dart';
+import 'package:DriverApp/Assistants/assitantMethods.dart';
+import 'package:DriverApp/Models/ridedetails.dart';
+import 'package:DriverApp/configMaps.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -27,21 +27,21 @@ class NotificationDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Image.asset(
-              "images/taxi.png",
+              "images/taxi.jpg",
               width: 120,
             ),
-            SizedBox(
+            const SizedBox(
               height: 18,
             ),
-            Text(
+            const Text(
               "New Ride Rquest",
               style: TextStyle(fontFamily: "Brand-Bold", fontSize: 18),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Padding(
@@ -56,20 +56,18 @@ class NotificationDialog extends StatelessWidget {
                         height: 16,
                         width: 16,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Expanded(
-                        child: Container(
-                          child: Text(
-                            rideDetails!.pickup_address!,
-                            style: TextStyle(fontSize: 18),
-                          ),
+                        child: Text(
+                          rideDetails!.pickup_address!,
+                          style: const TextStyle(fontSize: 18),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -80,15 +78,13 @@ class NotificationDialog extends StatelessWidget {
                         height: 16,
                         width: 16,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Expanded(
-                        child: Container(
-                          child: Text(
-                            rideDetails!.dropoff_address!,
-                            style: TextStyle(fontSize: 18),
-                          ),
+                        child: Text(
+                          rideDetails!.dropoff_address!,
+                          style: const TextStyle(fontSize: 18),
                         ),
                       ),
                     ],
@@ -96,15 +92,15 @@ class NotificationDialog extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Divider(
+            const Divider(
               height: 2,
               thickness: 2,
               color: Colors.black,
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Padding(
@@ -113,61 +109,61 @@ class NotificationDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red),
-                      ),
-                    ),
+                    // style: TextButton.styleFrom(
+                    //     // shape: RoundedRectangleBorder(
+                    //     //   borderRadius: BorderRadius.circular(18.0),
+                    //     //   side: BorderSide(color: Colors.red),
+                    //     // ),
+                    //     ),
                     onPressed: () {
                       assetsAudioPlayer.stop();
                       Navigator.pop(context);
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 20,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 10,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         "Cancel".toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 25,
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.green),
-                      ),
-                    ),
+                  TextButton(
+                    // style: ElevatedButton.styleFrom(
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(18.0),
+                    //     side: BorderSide(color: Colors.green),
+                    //   ),
+                    // ),
                     onPressed: () {
                       assetsAudioPlayer.stop();
                       checkAvailablityOfRide(context);
                       // Navigator.pop(context);
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 20,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 10,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.green,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         "Accept".toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                         ),
@@ -195,8 +191,7 @@ class NotificationDialog extends StatelessWidget {
       } else {
         displayToastMessage("Ride not exists", context);
       }
-      if(theRideId==rideDetails!.ride_request_id)
-      {
+      if (theRideId == rideDetails!.ride_request_id) {
         rideRequestRef.set("accepted");
         AssistantMethods.disableHomeTabLiveLocationUpdates();
         // Navigator.pop(context);
@@ -204,25 +199,20 @@ class NotificationDialog extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => NewRideScreen(rideDetails: rideDetails)));
-      }
-      else if(theRideId=="cancelled")
-      {
+      } else if (theRideId == "cancelled") {
         // Navigator.pop(context);
         displayToastMessage("Ride has been cancelled", context);
-      }
-      else if(theRideId=="timeout")
-      {
+      } else if (theRideId == "timeout") {
         // Navigator.pop(context);
         displayToastMessage("Ride has timed out", context);
-      }
-      else
-      {
+      } else {
         // Navigator.pop(context);
         displayToastMessage("Ride not exists", context);
       }
     });
   }
 }
+
 void displayToastMessage(String message, BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(

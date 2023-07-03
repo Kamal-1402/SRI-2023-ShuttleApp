@@ -1,19 +1,19 @@
-import 'package:driver_app/configMaps.dart';
-import 'package:driver_app/views/carInfo.dart';
+import 'package:DriverApp/configMaps.dart';
+import 'package:DriverApp/views/carInfo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:driver_app/DataHandler/appData.dart';
-import 'package:driver_app/firebase_options.dart';
-import 'package:driver_app/views/EmailVerify.dart';
-import 'package:driver_app/views/HomePage.dart';
-import 'package:driver_app/views/MapGoogle.dart';
-import 'package:driver_app/views/MapPage.dart';
-import 'package:driver_app/views/ProfilePage.dart';
-import 'package:driver_app/views/RegisterPage.dart';
-import 'package:driver_app/views/loginPage.dart';
-import 'package:driver_app/UI/map_base.dart';
+import 'package:DriverApp/DataHandler/appData.dart';
+import 'package:DriverApp/firebase_options.dart';
+import 'package:DriverApp/views/EmailVerify.dart';
+import 'package:DriverApp/views/HomePage.dart';
+import 'package:DriverApp/views/MapGoogle.dart';
+import 'package:DriverApp/views/MapPage.dart';
+import 'package:DriverApp/views/ProfilePage.dart';
+import 'package:DriverApp/views/RegisterPage.dart';
+import 'package:DriverApp/views/loginPage.dart';
+import 'package:DriverApp/UI/map_base.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer' as dev show log;
 
@@ -34,7 +34,8 @@ Future<void> main() async {
 
 DatabaseReference usersRef = FirebaseDatabase.instance.ref().child("users");
 DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
-DatabaseReference newRequestsRef = FirebaseDatabase.instance.ref().child("Ride Requests");
+DatabaseReference newRequestsRef =
+    FirebaseDatabase.instance.ref().child("Ride Requests");
 DatabaseReference rideRequestRef = FirebaseDatabase.instance
     .ref()
     .child("drivers")
@@ -49,13 +50,16 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<AppData>(
       create: (context) => AppData(),
       child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Driver App',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             // useMaterial3: true,
           ),
           // home: const Authentication(),
-          home:FirebaseAuth.instance.currentUser == null ? const Authentication() : const MapGoogle(),
+          home: FirebaseAuth.instance.currentUser == null
+              ? const Authentication()
+              : const MapGoogle(),
           // home:const EmailVerify(),
           // home:const HomePage(),
           // home: const MapGoogle(),
@@ -92,25 +96,93 @@ class Authentication extends StatelessWidget {
             final CurrUser = FirebaseAuth.instance.currentUser;
             if (CurrUser == null) {
               dev.log("user not found");
-              return Center(
-                child: Padding(
+              return SafeArea(
+                child: Container(
+                  color: Colors.white,
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      const Text("you are not logged in"),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login/', (route) => false);
-
-                          // const EmailVerify();
-                        },
-                        child: const Text('click here to login'),
-                      ),
-                    ],
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset("images/bike.png"),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          "WELCOME",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 26),
+                        const Text(
+                          "Please Login",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/login/', (route) => false);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 24),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          child: const Text(
+                            'Log In',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
+
+              // SafeArea(
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Center(
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           const Text("you are not logged in"),
+              //           TextButton(
+              //             onPressed: () {
+              //               Navigator.of(context).pushNamedAndRemoveUntil(
+              //                   '/login/', (route) => false);
+
+              //               // const EmailVerify();
+              //             },
+              //             child: const Text('click here to login'),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // );
 
               // return const loginPage();
             }

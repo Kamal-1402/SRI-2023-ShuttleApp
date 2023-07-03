@@ -1,6 +1,4 @@
-
-
-import 'package:driver_app/Assistants/assitantMethods.dart';
+import 'package:DriverApp/Assistants/assitantMethods.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -8,13 +6,13 @@ import '../Models/history.dart';
 
 class HistoryItem extends StatelessWidget {
   final History? history;
-  const HistoryItem({super.key,this.history});
+  const HistoryItem({super.key, this.history});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child:Column(
+      child: Column(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +41,7 @@ class HistoryItem extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      "\$${history!.fares}",
+                      "${history!.fares} ₹",
                       style: TextStyle(fontFamily: "Brand Bold"),
                     ),
                   ],

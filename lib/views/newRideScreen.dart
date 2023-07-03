@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as dev show log;
-import 'package:driver_app/Models/ridedetails.dart';
-import 'package:driver_app/configMaps.dart';
+import 'package:DriverApp/Models/ridedetails.dart';
+import 'package:DriverApp/configMaps.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -167,7 +167,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                 child: Column(
                   children: [
                     Text(
-                      durationRide,
+                      durationRide + " min",
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Brand-Bold",
@@ -187,10 +187,10 @@ class _NewRideScreenState extends State<NewRideScreen> {
                             fontFamily: "Brand-Bold",
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Icon(Icons.call),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(right: 10),
+                        //   child: Icon(Icons.call),
+                        // ),
                       ],
                     ),
                     SizedBox(
@@ -266,7 +266,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
                               context: context,
                               builder: (BuildContext context) =>
                                   const ProgressDialog(
-                                message: "Please wait...",
+                                message: "Please wait",
                               ),
                             );
                             await getPlaceDirection(widget.rideDetails!.pickup!,
@@ -333,7 +333,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => const ProgressDialog(
-              message: "Please wait... this is newRideScreen",
+              message: "Please wait",
             ));
     var details = await AssistantMethods.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);
@@ -446,6 +446,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
         .child(rideRequestId)
         .child("driver_id")
         .set(driversInformation!.id);
+    newRequestsRef.child(rideRequestId).child("passenger_count").set(count);
     newRequestsRef.child(rideRequestId).child("car_details").set(
         '${driversInformation!.car_color}-${driversInformation!.car_model}-${driversInformation!.car_number}');
     newRequestsRef.child(rideRequestId).child("driver_location").set({
@@ -477,7 +478,9 @@ class _NewRideScreenState extends State<NewRideScreen> {
           posLatLng, destinationLatLng);
       if (directionDetails != null) {
         setState(() {
-          durationRide = directionDetails.durationValue.toString();
+          durationRide =
+              directionDetails.durationValue.toString().split('.').first;
+          // String result = originalString.split('.').first;
         });
       }
       isRequestingDirection = false;
@@ -497,16 +500,17 @@ class _NewRideScreenState extends State<NewRideScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => const ProgressDialog(
-              message: "Please wait... this is EndTrip",
+              message: "Please wait",
             ));
 
     var currentLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
     var directionalDetails = await AssistantMethods.obtainPlaceDirectionDetails(
         widget.rideDetails!.pickup!, currentLatLng);
     Navigator.pop(context);
-    double fareAmount = AssistantMethods.calculateFares(directionalDetails!);
 
     String rideRequestId = widget.rideDetails!.ride_request_id!;
+    double fareAmount =
+        AssistantMethods.calculateFares(directionalDetails!, rideRequestId);
     newRequestsRef
         .child(rideRequestId)
         .child("fares")
@@ -532,7 +536,8 @@ class _NewRideScreenState extends State<NewRideScreen> {
         .once()
         .then((DatabaseEvent databaseEvent) {
       if (databaseEvent.snapshot.value != null) {
-        double oldEarnings = double.parse(databaseEvent.snapshot.value.toString());
+        double oldEarnings =
+            double.parse(databaseEvent.snapshot.value.toString());
         double totalEarnings = fareAmount + oldEarnings;
         driversRef
             .child(currentfirebaseUser!.uid)

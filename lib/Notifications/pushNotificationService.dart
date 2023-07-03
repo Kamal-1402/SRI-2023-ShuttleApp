@@ -3,8 +3,8 @@ import 'dart:async';
 import 'dart:developer' as dev show log;
 
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:driver_app/Models/ridedetails.dart';
-import 'package:driver_app/main.dart';
+import 'package:DriverApp/Models/ridedetails.dart';
+import 'package:DriverApp/main.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

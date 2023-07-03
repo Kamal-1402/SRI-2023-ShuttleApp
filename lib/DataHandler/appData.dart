@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:driver_app/Models/address.dart';
+import 'package:DriverApp/Models/address.dart';
 
 import '../Models/history.dart';
 
@@ -26,6 +26,7 @@ class AppData extends ChangeNotifier {
     pickUpLocation = newPickUpAddress;
     notifyListeners();
   }
+
   void updateEarnings(String updatedEarnings) {
     earnings = updatedEarnings;
     notifyListeners();
@@ -45,5 +46,4 @@ class AppData extends ChangeNotifier {
     tripHistoryDataList.add(eachHistory);
     notifyListeners();
   }
-
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:driver_app/AllWidgets/HorizontalLine.dart';
+import 'package:DriverApp/AllWidgets/HorizontalLine.dart';
 import 'package:provider/provider.dart';
 
 import 'dart:developer' as dev show log;
@@ -167,18 +167,17 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: SingleChildScrollView(
                     reverse: true,
                     child: ListView.separated(
-                      padding: const EdgeInsets.all(0),
-                      itemBuilder: (context, index) {
-                        return PredictionTile(
-                          placePredictions: placePredictionList[index],
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const HorizontalLine(),
-                      itemCount: placePredictionList.length,
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics()
-                    ),
+                        padding: const EdgeInsets.all(0),
+                        itemBuilder: (context, index) {
+                          return PredictionTile(
+                            placePredictions: placePredictionList[index],
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const HorizontalLine(),
+                        itemCount: placePredictionList.length,
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics()),
                   ),
                 )
               : Container(),
@@ -244,7 +243,8 @@ class PredictionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    placePredictions.place_formatted ?? "place_formatted not found",
+                    placePredictions.place_formatted ??
+                        "place_formatted not found",
                     overflow: TextOverflow.visible,
                     style: const TextStyle(fontSize: 16),
                   ),

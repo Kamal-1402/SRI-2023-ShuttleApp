@@ -10,7 +10,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:latlng/latlng.dart';
-import 'package:driver_app/Assistants/requestAssitant.dart';
+import 'package:DriverApp/Assistants/requestAssitant.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -90,36 +90,47 @@ class AssistantMethods {
     return directionDetails;
   }
 
-  static double calculateFares(DirectionDetails directionDetails) {
-    // in terms of USD
+  static double calculateFares(
+      DirectionDetails directionDetails, String rideRequestId) {
+    newRequestsRef
+        .child(rideRequestId)
+        .child("passenger_count")
+        .once()
+        .then((DatabaseEvent databaseEvent) {
+      if (databaseEvent.snapshot.value != null) {
+        count = int.parse(databaseEvent.snapshot.value.toString());
+        dev.log(count.toString() + "this is the count form assisstant method");
+      }
+    });
     double timeTraveledFare = (directionDetails.durationText! / 60) * 0.20;
     double distanceTraveledFare =
         (directionDetails.distanceText! / 1000) * 0.20;
-    double totalFareAmount = timeTraveledFare + distanceTraveledFare;
+    double passengerCnt = count + 0.0;
+    // dev.log(passengerFare.toString());
+    double totalFareAmount = (timeTraveledFare + distanceTraveledFare);
+    totalFareAmount =
+        count == 0 ? totalFareAmount : totalFareAmount / passengerCnt;
     // local currency
     // 1$ = 80 RS
-    double totalLocalAmount = totalFareAmount * 80;
+    double totalLocalAmount = totalFareAmount;
 
-    if(rideType=="bus")
-    {
-      totalLocalAmount=totalLocalAmount*0.5;
-    }
-    if(rideType=="van")
-    {
-      totalLocalAmount=totalLocalAmount*0.7;
-    }
-    if(rideType=="auto")
-    {
-      totalLocalAmount=totalLocalAmount;
-    }
+    // if (rideType == "bus" || rideType == "van" || rideType == "auto") {
+    //   totalLocalAmount = totalLocalAmount * 0.5;
+    // }
+    // if (rideType == "van") {
+    //   totalLocalAmount = totalLocalAmount * 0.7;
+    // }
+    // if (rideType == "auto") {
+    //   totalLocalAmount = totalLocalAmount;
+    // }
     // Extract first two digits after the decimal point
-    String localAmountString = totalLocalAmount.toStringAsFixed(2);
-    String firstTwoDigits = localAmountString.substring(
-      localAmountString.indexOf('.') + 1,
-      localAmountString.indexOf('.') + 3,
-    );
+    // String localAmountString = totalLocalAmount.toStringAsFixed(2);
+    // String firstTwoDigits = localAmountString.substring(
+    //   localAmountString.indexOf('.') + 1,
+    //   localAmountString.indexOf('.') + 3,
+    // );
     // dev.log("firstTwoDigits of the Rs: $firstTwoDigits");
-    return double.parse(firstTwoDigits);
+    return (totalLocalAmount);
   }
 
   // static void getCurrentOnlineUserInfo() async {
@@ -186,8 +197,6 @@ class AssistantMethods {
   }
 
   static void retrieveHistoryInfo(context) {
-
-    
     //retrieve and display earnings
     driversRef
         .child(currentfirebaseUser!.uid)
@@ -244,4 +253,22 @@ class AssistantMethods {
         "${DateFormat.MMMd().format(dateTime)}, ${DateFormat.y().format(dateTime)} - ${DateFormat.jm().format(dateTime)}";
     return formattedDate;
   }
+
+  static void passengerCount(int count) {
+    DatabaseReference passengerCountRef =
+        FirebaseDatabase.instance.ref().child("passengerCount");
+    passengerCountRef.set(count);
+  }
+
+  // static void passengerCount(context) {
+  //   DatabaseReference passengerCountRef =
+  //       FirebaseDatabase.instance.ref().child("passengerCount");
+  //   passengerCountRef.once().then((DataSnapshot dataSnapshot) {
+  //     if (dataSnapshot.value != null) {
+  //       int passengerCount = dataSnapshot.value;
+  //       Provider.of<AppData>(context, listen: false)
+  //           .updatePassengerCount(passengerCount);
+  //     }
+  //   });
+  // }
 }

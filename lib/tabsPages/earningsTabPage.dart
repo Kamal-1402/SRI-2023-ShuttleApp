@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:driver_app/configMaps.dart';
+// import 'package:DriverApp/configMaps.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer' as dev show log;
 import '../DataHandler/appData.dart';
@@ -10,76 +10,81 @@ class EarningTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
-        color: Colors.black54,
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 70),
-          child: Column(
-            children: [
-              const Text(
-                "Total Earnings",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                "\$${Provider.of<AppData>(context, listen: false).earnings}",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontSize: 50,
-                  fontFamily: "Brand Bold",
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      TextButton(
-          onPressed: () {
-            // dev.log("go to the history page");
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const HistoryScreen()));
-          },
+    return SafeArea(
+      child: Column(children: [
+        Container(
+          color: Colors.black54,
+          width: double.infinity,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            child: Row(
+            padding: const EdgeInsets.symmetric(vertical: 70),
+            child: Column(
               children: [
-                Image.asset(
-                  "images/uberx.png",
-                  width: 70,
+                const Text(
+                  "Total Earnings",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                  ),
                 ),
-                SizedBox(
-                  width: 16,
-                ),
+                const SizedBox(height: 5),
                 Text(
-                  "Total Trips",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Expanded(
-                  child: Container(
-                      child: Text(
-                    Provider.of<AppData>(context, listen: false)
-                        .countTrips
-                        .toString(),
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 16),
-                  )),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.black54,
+                  "${Provider.of<AppData>(context, listen: false).earnings} ₹",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 50,
+                    fontFamily: "Brand Bold",
+                  ),
                 ),
               ],
             ),
-          )
           ),
-          Divider(height: 2, color: Colors.black54, thickness: 2,)
-
-    ]);
+        ),
+        TextButton(
+            onPressed: () {
+              // dev.log("go to the history page");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HistoryScreen()));
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "images/bike.png",
+                    width: 70,
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  const Text(
+                    "Total Trips",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Expanded(
+                    child: Text(
+                      Provider.of<AppData>(context, listen: false)
+                          .countTrips
+                          .toString(),
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Colors.black54,
+                  ),
+                ],
+              ),
+            )),
+        const Divider(
+          height: 2,
+          color: Colors.black54,
+          thickness: 2,
+        )
+      ]),
+    );
   }
 }

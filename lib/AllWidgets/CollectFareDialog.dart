@@ -1,6 +1,6 @@
-import 'package:driver_app/AllWidgets/HorizontalLine.dart';
-import 'package:driver_app/Assistants/assitantMethods.dart';
-import 'package:driver_app/configMaps.dart';
+import 'package:DriverApp/AllWidgets/HorizontalLine.dart';
+import 'package:DriverApp/Assistants/assitantMethods.dart';
+import 'package:DriverApp/configMaps.dart';
 import 'package:flutter/material.dart';
 
 class CollectFareDialog extends StatelessWidget {
@@ -27,16 +27,16 @@ class CollectFareDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 22.0),
-            Text(
-              'Trip Fare(' + rideType.toString() + ')',
+            const Text(
+              'Trip Fare',
               style: TextStyle(fontSize: 20.0, fontFamily: 'Brand-Bold'),
             ),
-            SizedBox(height: 22.0),
-            HorizontalLine(),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 22.0),
+            const HorizontalLine(),
+            const SizedBox(height: 16.0),
             Text(
-              '\$$fareAmount',
-              style: TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
+              '$fareAmount ₹',
+              style: const TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
             ),
             SizedBox(height: 16.0),
             Padding(
@@ -57,10 +57,10 @@ class CollectFareDialog extends StatelessWidget {
                   AssistantMethods.enableHomeTabLiveLocationUpdates();
                 },
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
                   backgroundColor: Colors.deepPurpleAccent,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 child: const Padding(
@@ -76,7 +76,7 @@ class CollectFareDialog extends StatelessWidget {
                             color: Colors.white),
                       ),
                       Icon(
-                        Icons.attach_money,
+                        Icons.payment,
                         color: Colors.white,
                         size: 26.0,
                       ),
@@ -85,7 +85,7 @@ class CollectFareDialog extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
           ],
         ),
       ),

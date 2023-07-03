@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer' as dev show log;
-import 'package:driver_app/configMaps.dart';
-import 'package:driver_app/main.dart';
-import 'package:driver_app/views/carInfo.dart';
+import 'package:DriverApp/configMaps.dart';
+import 'package:DriverApp/main.dart';
+import 'package:DriverApp/views/carInfo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +26,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   GoogleMapController? newGoogleMapController;
 
-  
-
-  
-
-  
-
   bool isDriverAvailable = false;
   @override
   void initState() {
@@ -54,8 +48,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
       }
     });
   }
-  void getRating()
-  {
+
+  void getRating() {
     // update Ratings
     driversRef
         .child(currentfirebaseUser!.uid)
@@ -98,7 +92,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
           });
           return;
         }
-        
       }
     });
   }
@@ -164,11 +157,11 @@ class _HomeTabPageState extends State<HomeTabPage> {
     // dev.log(driversInformation!.displayName.toString() + "line 163 fot hometabpage");
     // dev.log("line 164 from hometabpage ");
     PushNotificationService pushNotificationService = PushNotificationService();
-    
+
     pushNotificationService.initialize(context);
     // dev.log("line 169 from hometabpage ");
     pushNotificationService.getToken();
-    
+
     AssistantMethods.retrieveHistoryInfo(context);
     getRating();
     getRideType();
@@ -177,103 +170,105 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GoogleMap(
-          // padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
-          mapType: MapType.normal,
-          myLocationButtonEnabled: true,
-          zoomControlsEnabled: true,
-          zoomGesturesEnabled: true,
-          // polylines: polylineSet,
-          // markers: markersSet,
-          // circles: circlesSet,
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(23.7128, 72.0060),
-            zoom: 10,
+    return SafeArea(
+      child: Stack(
+        children: [
+          GoogleMap(
+            // padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
+            mapType: MapType.normal,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: true,
+            zoomGesturesEnabled: true,
+            // polylines: polylineSet,
+            // markers: markersSet,
+            // circles: circlesSet,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(23.7128, 72.0060),
+              zoom: 10,
+            ),
+            myLocationEnabled: true,
+            onMapCreated: (GoogleMapController controller) {
+              _controllerGoogleMap.complete(controller);
+              newGoogleMapController = controller;
+
+              locatePosition();
+            },
           ),
-          myLocationEnabled: true,
-          onMapCreated: (GoogleMapController controller) {
-            _controllerGoogleMap.complete(controller);
-            newGoogleMapController = controller;
 
-            locatePosition();
-          },
-        ),
+          // online offline driver container
+          // Container(
+          //   height: 140,
+          //   width: double.infinity,
+          //   color: Colors.black54,
+          // ),
 
-        // online offline driver container
-        Container(
-          height: 140,
-          width: double.infinity,
-          color: Colors.black54,
-        ),
+          // online offline driver container
+          Positioned(
+            top: 40,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        if (isDriverAvailable != true) {
+                          makeDriverOnlineNow();
+                          getLocationLiveUpdates();
 
-        // online offline driver container
-        Positioned(
-          top: 60,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: ElevatedButton(
-                    onPressed: () {
-                      if (isDriverAvailable != true) {
-                        makeDriverOnlineNow();
-                        getLocationLiveUpdates();
+                          setState(() {
+                            driverStatusColor = Colors.green;
+                            driverStatusText = "Online Now ";
+                            isDriverAvailable = true;
+                          });
 
-                        setState(() {
-                          driverStatusColor = Colors.green;
-                          driverStatusText = "Online Now ";
-                          isDriverAvailable = true;
-                        });
+                          displayToastMessage("You are Online Now", context);
+                        } else {
+                          makeDriverOfflinenow();
+                          setState(() {
+                            driverStatusColor = Colors.black;
+                            driverStatusText = "Offline Now - Go Online ";
+                            isDriverAvailable = false;
+                          });
 
-                        displayToastMessage("You are Online Now", context);
-                      } else {
-                        makeDriverOfflinenow();
-                        setState(() {
-                          driverStatusColor = Colors.black;
-                          driverStatusText = "Offline Now - Go Online ";
-                          isDriverAvailable = false;
-                        });
-
-                        displayToastMessage("You are Offline Now", context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: driverStatusColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
+                          displayToastMessage("You are Offline Now", context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        backgroundColor: driverStatusColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                        padding: EdgeInsets.all(17),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              driverStatusText,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontFamily: "Brand Bold",
+                      child: Padding(
+                          padding: EdgeInsets.all(17),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                driverStatusText,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: "Brand Bold",
+                                ),
                               ),
-                            ),
-                            Icon(
-                              Icons.phone_android,
-                              color: Colors.white,
-                              size: 26,
-                            ),
-                          ],
-                        ))),
-              ),
-            ],
-          ),
-        )
-      ],
+                              Icon(
+                                Icons.phone_android,
+                                color: Colors.white,
+                                size: 26,
+                              ),
+                            ],
+                          ))),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 

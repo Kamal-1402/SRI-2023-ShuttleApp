@@ -20,76 +20,76 @@ class CarInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-          child: SingleChildScrollView(
+    return SafeArea(
+      child: Scaffold(
+          body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 22,
+            const SizedBox(
+              height: 30,
             ),
             Image.asset(
-              "images/Shuttle.png",
+              "images/Shuttle.jpg",
               width: 390,
               height: 250,
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(22, 22, 22, 32),
+              padding: const EdgeInsets.fromLTRB(22, 22, 22, 32),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
-                  Text(
+                  const Text(
                     "Enter Shuttle Details",
                     style: TextStyle(fontFamily: "Brand Bold", fontSize: 24),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 26,
                   ),
                   TextField(
                     controller: carModelTextEditingController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Shuttle Model",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
                     ),
                     style: TextStyle(fontSize: 15),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextField(
                     controller: carNumberTextEditingController,
-                    decoration: InputDecoration(
-                      labelText: "Shuttle Numbers",
+                    decoration: const InputDecoration(
+                      labelText: "Shuttle Number",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
                     ),
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextField(
                     controller: carColorTextEditingController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Shuttle Color",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
                     ),
                     style: TextStyle(fontSize: 15),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextField(
                     controller: carTypeTextEditingController,
                     decoration: const InputDecoration(
                       labelText: "Shuttle Type",
-                      hintText: "e.g. auto,van,bus",
+                      hintText: "e.g. auto",
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
                     ),
                     style: TextStyle(fontSize: 15),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                   Padding(
@@ -160,7 +160,11 @@ class CarInfo extends StatelessWidget {
       "type": carTypeTextEditingController.text,
     };
     driversRef.child(userId).child("car_details").set(carInfoMap);
-    Navigator.pushNamedAndRemoveUntil(context, "/Home/MapGoogle/", (route) => false);
+    Navigator.pushNamedAndRemoveUntil(
+        // context, "/Home/MapGoogle/", (route) => false);
+        context,
+        "/login/EmailVerify/",
+        (route) => false);
   }
 }
 
