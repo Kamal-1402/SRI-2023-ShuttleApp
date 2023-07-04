@@ -505,7 +505,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
 
     var currentLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
     var directionalDetails = await AssistantMethods.obtainPlaceDirectionDetails(
-        widget.rideDetails!.pickup!, currentLatLng);
+        widget.rideDetails!.pickup!, widget.rideDetails!.dropoff!);
     Navigator.pop(context);
 
     String rideRequestId = widget.rideDetails!.ride_request_id!;

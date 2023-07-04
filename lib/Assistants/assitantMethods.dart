@@ -102,6 +102,7 @@ class AssistantMethods {
         dev.log(count.toString() + "this is the count form assisstant method");
       }
     });
+    
     double timeTraveledFare = (directionDetails.durationText! / 60) * 0.20;
     double distanceTraveledFare =
         (directionDetails.distanceText! / 1000) * 0.20;
@@ -112,7 +113,7 @@ class AssistantMethods {
         count == 0 ? totalFareAmount : totalFareAmount / passengerCnt;
     // local currency
     // 1$ = 80 RS
-    double totalLocalAmount = totalFareAmount;
+    double totalLocalAmount = totalFareAmount*50;
 
     // if (rideType == "bus" || rideType == "van" || rideType == "auto") {
     //   totalLocalAmount = totalLocalAmount * 0.5;

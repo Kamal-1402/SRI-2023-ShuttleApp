@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../AllWidgets/HistoryItem.dart';
 import 'dart:developer' as dev show log;
+import '../Assistants/assitantMethods.dart';
 import '../DataHandler/appData.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -15,6 +16,13 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // AssistantMethods.retrieveHistoryInfo(context);
+    AssistantMethods.obtainTripRequestHistoryData(context);
+    // dev.log("getCurrentDriverInfo did not work");
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,8 +53,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   thickness: 1,
                 );
               },
-              // itemCount: Provider.of<AppData>(context).tripHistoryDataList.length,
-              itemCount: 2,
+              itemCount: Provider.of<AppData>(context).tripHistoryDataList.length,
+              // itemCount: 2,
               physics: const ClampingScrollPhysics(),
               shrinkWrap: true,
             ),

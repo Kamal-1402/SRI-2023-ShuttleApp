@@ -31,6 +31,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
   void initState() {
     super.initState();
     getCurrentDriverInfo();
+    AssistantMethods.retrieveHistoryInfo(context);
+    // AssistantMethods.obtainTripRequestHistoryData(context);
     // dev.log("getCurrentDriverInfo did not work");
   }
 
@@ -282,10 +284,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
         currentPosition!.longitude);
 
     rideRequestRef.set("searching");
-    
-    rideRequestRef.onValue.listen((event) {
 
-    });
+    rideRequestRef.onValue.listen((event) {});
   }
 
   void getLocationLiveUpdates() {

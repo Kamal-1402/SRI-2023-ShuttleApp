@@ -7,10 +7,15 @@ import 'package:flutter/material.dart';
 class CollectFareDialog extends StatelessWidget {
   final String? paymentMethod;
   final double? fareAmount;
+  
   const CollectFareDialog({super.key, this.paymentMethod, this.fareAmount});
 
   @override
   Widget build(BuildContext context) {
+    String fare;
+    fare = fareAmount.toString();
+    if (fare.length > 5) fare = fare.substring(0, 5);
+    fare="$fare₹";
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -36,7 +41,7 @@ class CollectFareDialog extends StatelessWidget {
             const HorizontalLine(),
             const SizedBox(height: 16.0),
             Text(
-              '$fareAmount ₹',
+              fare ,
               style: const TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
             ),
             const SizedBox(height: 16.0),
