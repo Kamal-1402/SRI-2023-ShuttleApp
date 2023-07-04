@@ -11,7 +11,7 @@ class CollectFareDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     String fare;
     fare = fareAmount.toString();
-    fare = fare.substring(0, 5);
+    if (fare.length > 5) fare = fare.substring(0, 5);
     fare = fare + "₹";
     return Dialog(
       shape: RoundedRectangleBorder(

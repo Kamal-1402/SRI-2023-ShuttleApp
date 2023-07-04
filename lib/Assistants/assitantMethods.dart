@@ -97,6 +97,7 @@ class AssistantMethods {
     // local currency
     // 1$ = 80 RS
     double totalLocalAmount = totalFareAmount * 80;
+    totalLocalAmount = totalLocalAmount * 25;
 
     // Extract first two digits after the decimal point
     String localAmountString = totalLocalAmount.toStringAsFixed(2);
