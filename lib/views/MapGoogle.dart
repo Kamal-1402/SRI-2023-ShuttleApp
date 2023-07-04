@@ -87,7 +87,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
 
   double rideDetailsContainerHeight = 0;
   double requestRideContainerHeight = 0;
-  double searchContainerHeight = 250.0;
+  double searchContainerHeight = 300.0;
   String? state = "normal";
 
   List<NearByAvailableDrivers>? availableDrivers;
@@ -105,7 +105,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   void resetApp() {
     setState(() {
       drawerOpen = true;
-      searchContainerHeight = 250.0;
+      searchContainerHeight = 300.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 300.0;
       requestRideContainerHeight = 0;
@@ -311,7 +311,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       requestRideContainerHeight = 0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 280;
-      driverDetailsContainerHeight = 330;
+      driverDetailsContainerHeight = 310;
       // drawerOpen = true;
     });
   }
@@ -319,7 +319,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
   void displayRideDetailsContainer() async {
     await getPlaceDirection();
     setState(() {
-      rideDetailsContainerHeight = 270;
+      rideDetailsContainerHeight = 340;
       searchContainerHeight = 0;
       bottomPaddingOfMap = 360;
       drawerOpen = false;
@@ -450,8 +450,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
           children: [
             GoogleMap(
               // padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
-              padding: EdgeInsets.only(
-                  bottom: bottomPaddingOfMap, top: 10, left: 10, right: 10),
+              padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
               mapType: MapType.normal,
               myLocationButtonEnabled: true,
               zoomControlsEnabled: true,
@@ -478,7 +477,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
 
             // HamburgerButton for Drawer
             Positioned(
-              top: 22,
+              top: 38,
               left: 22,
               child: GestureDetector(
                 onTap: () {
@@ -537,7 +536,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 18),
+                        horizontal: 10, vertical: 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -602,7 +601,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                               color: Colors.grey,
                             ),
                             const SizedBox(
-                              width: 12,
+                              width: 6,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
