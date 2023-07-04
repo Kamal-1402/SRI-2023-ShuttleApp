@@ -264,8 +264,9 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       }
       setState(() {
         String str = details.durationValue!.toString();
-        str.substring(0, 2);
-        rideStatus = "Driver is Arriving - $str";
+        str = str.substring(0, 2);
+        dev.log(str);
+        rideStatus = "Driver Arriving in - $str  min";
       });
       isRequestingPositionDetails = false;
     }
@@ -284,6 +285,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
       }
       setState(() {
         rideStatus = "Going to Destination - ${details.durationValue!}";
+        dev.log("$details.durationValue!");
       });
       isRequestingPositionDetails = false;
     }
@@ -450,7 +452,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
             ),
           ),
         ),
-        body: Container(
+        body: SizedBox(
           height: screenheight,
           width: screenwidth,
           child: Stack(
@@ -715,7 +717,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                               dev.log("Request Button Pressed");
                             },
                             child: Container(
-                              width: double.infinity,
+                              // width: double.infinity,
+                              width: screenwidth,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
@@ -784,7 +787,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                               dev.log("Request Button Pressed");
                             },
                             child: Container(
-                              width: double.infinity,
+                              // width: double.infinity,
+                              width: screenwidth,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
@@ -950,7 +954,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                   height: requestRideContainerHeight,
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
-                    child: Column(
+                    child: Stack(
                       children: [
                         const SizedBox(
                           height: 12.5,
@@ -960,7 +964,8 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                           left: 0,
                           bottom: 0,
                           child: SizedBox(
-                            width: double.infinity,
+                            // width: double.infinity,
+                            width: screenwidth,
                             child: AnimatedTextKit(
                               onTap: () {
                                 // Navigator.push(
@@ -1001,8 +1006,9 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                             cancelRideRequest();
                             resetApp();
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            // child: Padding(
+                            // padding: const EdgeInsets.only(left: 150, top: 80),
                             child: Container(
                               height: 60,
                               width: 60,
@@ -1017,13 +1023,15 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                                 size: 26,
                               ),
                             ),
+                            // ),
                           ),
                         ),
                         const SizedBox(
                           height: 10.0,
                         ),
                         Container(
-                          width: double.infinity,
+                          // width: double.infinity,
+                          width: screenwidth,
                           child: const Text(
                             "Cancel Ride",
                             textAlign: TextAlign.center,
@@ -1068,7 +1076,7 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              rideStatus,
+                              "$rideStatus",
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: 16, fontFamily: "Brand-Bold"),

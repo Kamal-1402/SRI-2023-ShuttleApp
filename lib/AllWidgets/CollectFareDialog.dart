@@ -9,6 +9,10 @@ class CollectFareDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String fare;
+    fare = fareAmount.toString();
+    fare = fare.substring(0, 5);
+    fare = fare + "₹";
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -31,11 +35,15 @@ class CollectFareDialog extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontFamily: 'Brand-Bold'),
             ),
             const SizedBox(height: 22.0),
-            const Divider(height: 2,thickness: 2,),
+            const Divider(
+              height: 2,
+              thickness: 2,
+            ),
             const SizedBox(height: 16.0),
             Text(
-              '$fareAmount ₹',
-              style: const TextStyle(fontSize: 55.0, fontFamily: 'Brand-Bold'),
+              // '$fareAmount ₹',
+              fare,
+              style: const TextStyle(fontSize: 50.0, fontFamily: 'Brand-Bold'),
             ),
             const SizedBox(height: 16.0),
             const Padding(
@@ -50,9 +58,7 @@ class CollectFareDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextButton(
                 onPressed: () {
-                  Navigator.pop(context,"close");
-                
-
+                  Navigator.pop(context, "close");
                 },
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.all(0.0),

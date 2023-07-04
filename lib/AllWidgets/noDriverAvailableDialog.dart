@@ -16,12 +16,13 @@ class NoDriverAvailableDialog extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(4.0),
         width: double.infinity,
+        height: 280,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(4.0),
         ),
         child: Padding(
-          padding:const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               const SizedBox(height: 6.0),
@@ -38,7 +39,6 @@ class NoDriverAvailableDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 22.0),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ElevatedButton(
@@ -46,14 +46,15 @@ class NoDriverAvailableDialog extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24.0),
                     ),
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(17.0),
-                    child:Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -61,8 +62,7 @@ class NoDriverAvailableDialog extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 20.0, fontWeight: FontWeight.bold),
                         ),
-                        Icon(Icons.car_repair,
-                            color: Colors.white, size: 26.0),
+                        Icon(Icons.car_repair, color: Colors.white, size: 26.0),
                       ],
                     ),
                   ),
