@@ -33,8 +33,8 @@ class AssistantMethods {
     var response = await RequestAssistant.getRequest(url);
 
     if (response != "failed") {
-      placeAddress = response["features"][0]["properties"]["address"];
-
+      // placeAddress = response["features"][0]["properties"]["address"];
+      placeAddress = response["features"][0]["text"];
       // st1 = response["results"][0]["address_components"][3]["long_name"];
       // st2 = response["results"][0]["address_components"][4]["long_name"];
       // st3 = response["results"][0]["address_components"][5]["long_name"];
