@@ -1459,7 +1459,6 @@ class _MapGoogleState extends State<MapGoogle> with TickerProviderStateMixin {
           timer.cancel();
 
           searchNearestDriver();
-          driversRef.child(driver.key!).child("newRide").set("searching");
         }
       });
     });
