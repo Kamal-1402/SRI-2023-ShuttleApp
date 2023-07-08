@@ -128,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             displayToastMessage(
                                 'User created successfully', context);
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/Home/MapGoogle/', (route) => false);
+                                '/login/EmailVerify/', (route) => false);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'email-already-in-use') {
                               dev.log(
