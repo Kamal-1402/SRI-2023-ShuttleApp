@@ -196,8 +196,10 @@ class _SearchScreenState extends State<SearchScreen> {
     if (placeName.length > 1) {
       // ignore: unused_local_variable
       String autoCompleteUrl =
-          // "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$dotenv.env['mapkey']";
-          "https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeName}&access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A&session_token=[GENERATED-UUID]&language=en&country=in&types=country%2Cregion%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory&proximity=72%2C23";
+          "https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeName}&language=en&country=in&session_token=[GENERATED-UUID]&access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A";
+      // "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$dotenv.env['mapkey']";
+      // "https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeName}&language=en&session_token=023e0dca-7997-4ff1-8893-46c205503939&access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A";
+      // "https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeName}&access_token=pk.eyJ1IjoiaXNvYmVsMzVyYW10bzM1IiwiYSI6ImNsaWhiOTN2ZDBpcG0zanA1c3VxZDdkNjMifQ.CV3WZC4Jh9mzyz-XbpRm7A&session_token=[GENERATED-UUID]&language=en&country=in&types=country%2Cregion%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory&proximity=72%2C23";
       var res = await RequestAssistant.getRequest(autoCompleteUrl);
       if (res == "failed") {
         return;
@@ -249,18 +251,17 @@ class PredictionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    placePredictions.place_formatted ??
-                        "place_formatted not found",
+                    placePredictions.PlaceName ?? "place_name not found",
                     overflow: TextOverflow.visible,
                     style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 8),
-
-                  // Text(
-                  //   placePredictions.neighborhood ?? "place_formatted is not found",
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  // ),
+                  const SizedBox(height: 3),
+                  Text(
+                    placePredictions.place_formatted ??
+                        "place_formatted is not found",
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               ),
             ),

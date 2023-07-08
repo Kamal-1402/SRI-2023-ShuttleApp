@@ -19,12 +19,14 @@ class PlacePredictions {
   String? neighborhood;
   String? street;
   String? placeId;
+  String? PlaceName;
   // String? place_formatted;
 
   PlacePredictions(
-      {this.place_formatted, this.country_code_alpha_3, this.neighborhood,this.postcode,this.street,this.placeId});
+      {this.place_formatted, this.country_code_alpha_3, this.neighborhood,this.postcode,this.street,this.placeId,this.PlaceName});
 
   PlacePredictions.fromJson(Map<String, dynamic> json) {
+    PlaceName = json['name'] ?? "";
     place_formatted = json['place_formatted'] ?? "";
     country_code_alpha_3 = json["context"]["country"]?['country_code_alpha_3'] ?? "";
     postcode = json["context"]?['postcode']?["name"] ?? "";
