@@ -261,7 +261,16 @@ class _NewRideScreenState extends State<NewRideScreen> {
                             setState(() {
                               btnTitle = "Start Trip";
                               btnColor = Colors.purpleAccent;
+                              // count++;
                             });
+
+                            //passenger_count
+                            // newRequestsRef
+                            //     .child(rideRequestId)
+                            //     .child("passenger_count")
+                            //     .set(count);
+
+
                             showDialog(
                               context: context,
                               builder: (BuildContext context) =>
@@ -432,6 +441,11 @@ class _NewRideScreenState extends State<NewRideScreen> {
   }
 
   void acceptRideRequest() {
+    setState(() {
+      
+        count++;
+      
+    });
     String rideRequestId = widget.rideDetails!.ride_request_id!;
     newRequestsRef.child(rideRequestId).child("status").set("accepted");
     newRequestsRef
@@ -496,6 +510,12 @@ class _NewRideScreenState extends State<NewRideScreen> {
 
   void endTheTrip() async {
     timer!.cancel();
+    // passenger_Count
+    setState(() {
+      if (count > 0) {
+        count--;
+      }
+    });
 
     showDialog(
         context: context,
@@ -504,8 +524,10 @@ class _NewRideScreenState extends State<NewRideScreen> {
             ));
 
     var currentLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
+    // var directionalDetails = await AssistantMethods.obtainPlaceDirectionDetails(
+    //     widget.rideDetails!.pickup!, widget.rideDetails!.dropoff!);
     var directionalDetails = await AssistantMethods.obtainPlaceDirectionDetails(
-        widget.rideDetails!.pickup!, widget.rideDetails!.dropoff!);
+        widget.rideDetails!.pickup!, currentLatLng);
     Navigator.pop(context);
 
     String rideRequestId = widget.rideDetails!.ride_request_id!;
@@ -516,6 +538,9 @@ class _NewRideScreenState extends State<NewRideScreen> {
         .child("fares")
         .set(fareAmount.toString());
     newRequestsRef.child(rideRequestId).child("status").set("ended");
+
+    //  passenger_Count
+    newRequestsRef.child(rideRequestId).child("passenger_count").set(count);
 
     rideStreamSubscription!.cancel();
 
