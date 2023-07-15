@@ -64,10 +64,10 @@ class EarningTabPage extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      "Last Rides",
-                      // Provider.of<AppData>(context, listen: false)
-                      //       .countTrips
-                      //     .toString(),
+                      // "Last Rides",
+                      Provider.of<AppData>(context, listen: false)
+                            .countTrips
+                          .toString(),
                       textAlign: TextAlign.end,
                       style: const TextStyle(fontSize: 16),
                     ),

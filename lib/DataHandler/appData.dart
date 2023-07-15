@@ -38,11 +38,13 @@ class AppData extends ChangeNotifier {
   }
 
   void updateTripKeys(List<String> newKeys) {
+    // tripHistoryKeys.clear();
     tripHistoryKeys = newKeys;
     notifyListeners();
   }
 
   void updateTripHistoryData(History eachHistory) {
+    // tripHistoryDataList.clear();
     tripHistoryDataList.add(eachHistory);
     notifyListeners();
   }

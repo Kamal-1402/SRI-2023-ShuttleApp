@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,6 +25,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     AssistantMethods.obtainTripRequestHistoryData(context);
     // dev.log("getCurrentDriverInfo did not work");
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,10 +44,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
             child: ListView.separated(
               padding: const EdgeInsets.all(0),
               itemBuilder: (BuildContext context, int index) {
-                return HistoryItem(
-                  history:
-                      Provider.of<AppData>(context).tripHistoryDataList[index],
-                );
+                if (index <=
+                    Provider.of<AppData>(context, listen: false).countTrips+1) {
+                  dev.log("this is from historryscreen " + index.toString());
+                  // dev.log(Provider.of<AppData>(context, listen: false)
+                  //     .tripHistoryDataList[index]
+                  //     .toString());
+                  return HistoryItem(
+                    history: Provider.of<AppData>(context)
+                        .tripHistoryDataList[index],
+                  );
+                }
+                return null;
               },
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
@@ -53,7 +64,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   thickness: 1,
                 );
               },
-              itemCount: Provider.of<AppData>(context).tripHistoryDataList.length,
+              itemCount:
+                  Provider.of<AppData>(context).tripHistoryDataList.length,
               // itemCount: 2,
               physics: const ClampingScrollPhysics(),
               shrinkWrap: true,

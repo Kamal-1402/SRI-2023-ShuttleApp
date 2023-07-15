@@ -70,6 +70,20 @@ class _NewRideScreenState extends State<NewRideScreen> {
     }
   }
 
+  void incrementCount() {
+    setState(() {
+      count++;
+    });
+  }
+
+  void decrementCount() {
+    setState(() {
+      if (count > 0) {
+        count--;
+      }
+    });
+  }
+
   void getRideLiveLocationUpdates() {
     LatLng oldPos = LatLng(0, 0);
     rideStreamSubscription =
@@ -114,225 +128,303 @@ class _NewRideScreenState extends State<NewRideScreen> {
   Widget build(BuildContext context) {
     createIconMarker();
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            padding: EdgeInsets.only(bottom: mapPaddingFromBottom),
-            mapType: MapType.normal,
-            myLocationButtonEnabled: true,
-            initialCameraPosition: NewRideScreen._kGooglePlex,
-            myLocationEnabled: true,
-            markers: markersSet,
-            circles: circlesSet,
-            polylines: polyLineSet,
-            onMapCreated: (GoogleMapController controller) async {
-              controllerGoogleMap.complete(controller);
-              newRideGoogleMapController = controller;
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            GoogleMap(
+              padding: EdgeInsets.only(bottom: mapPaddingFromBottom),
+              mapType: MapType.normal,
+              myLocationButtonEnabled: true,
+              initialCameraPosition: NewRideScreen._kGooglePlex,
+              myLocationEnabled: true,
+              markers: markersSet,
+              circles: circlesSet,
+              polylines: polyLineSet,
+              onMapCreated: (GoogleMapController controller) async {
+                controllerGoogleMap.complete(controller);
+                newRideGoogleMapController = controller;
 
-              setState(() {
-                mapPaddingFromBottom = 265.0;
-              });
+                setState(() {
+                  mapPaddingFromBottom = 265.0;
+                });
 
-              var currentLatLng =
-                  LatLng(currentPosition!.latitude, currentPosition!.longitude);
-              var pickUpLatLng = widget.rideDetails!.pickup!;
-              // locatePosition();
-              await getPlaceDirection(currentLatLng, pickUpLatLng);
+                var currentLatLng = LatLng(
+                    currentPosition!.latitude, currentPosition!.longitude);
+                var pickUpLatLng = widget.rideDetails!.pickup!;
+                // locatePosition();
+                await getPlaceDirection(currentLatLng, pickUpLatLng);
 
-              getRideLiveLocationUpdates();
-            },
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              // height: 300,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 16,
-                    spreadRadius: 0.5,
-                    offset: Offset(0.7, 0.7),
-                  )
-                ],
-              ),
-              height: 350,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                getRideLiveLocationUpdates();
+              },
+            ),
+            Positioned(
+              left: 20,
+              top: 40,
+              child: Container(
+                height: 83,
+                width: 140,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 5,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.3, 0.3),
+                    )
+                  ],
+                ),
+                // color: Color.fromARGB(255, 222, 220, 214),
                 child: Column(
                   children: [
-                    Text(
-                      durationRide + " min",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "Brand-Bold",
-                        color: Colors.deepPurple,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 6,
+                    const Column(
+                      children: [
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          "Passenger Count",
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                        // SizedBox(
+                        //   height: 25,
+                        // )
+                      ],
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          widget.rideDetails!.rider_name!,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontFamily: "Brand-Bold",
-                          ),
+                        IconButton(
+                          iconSize: 40,
+                          icon: Icon(Icons.remove),
+                          color: Colors.red,
+                          onPressed: decrementCount,
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(right: 10),
-                        //   child: Icon(Icons.call),
+
+                        Text(
+                          count.toString(),
+                          style: TextStyle(fontSize: 35),
+                        ),
+                        IconButton(
+                          iconSize: 40,
+                          icon: Icon(Icons.add),
+                          color: Colors.green,
+                          onPressed: incrementCount,
+                        )
+                        // Container(
+                        //   height: 80,
+                        //   width: 80,
+                        //   padding: EdgeInsets.all(10),
+                        //   color: Colors.green,
+                        //   // decoration: BoxDecoration(
+                        //   //   borderRadius: BorderRadius.circular(1),
+                        //   // ),
+                        //   child: IconButton(
+                        //     icon: Icon(Icons.add),
+                        //     iconSize: 40,
+                        //     onPressed: incrementCount,
+                        //   ),
                         // ),
                       ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Image.asset(
-                          "images/pickicon.png",
-                          height: 16,
-                          width: 16,
-                        ),
-                        SizedBox(
-                          width: 18,
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Text(
-                              widget.rideDetails!.pickup_address!,
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                      children: [
-                        Image.asset(
-                          "images/desticon.png",
-                          height: 16,
-                          width: 16,
-                        ),
-                        SizedBox(
-                          width: 18,
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Text(
-                              widget.rideDetails!.dropoff_address!,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 18,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (status == "accepted") {
-                            status = "arrived";
-                            String rideRequestId =
-                                widget.rideDetails!.ride_request_id!;
-                            newRequestsRef
-                                .child(rideRequestId)
-                                .child("status")
-                                .set(status);
-                            setState(() {
-                              btnTitle = "Start Trip";
-                              btnColor = Colors.purpleAccent;
-                              // count++;
-                            });
-
-                            //passenger_count
-                            // newRequestsRef
-                            //     .child(rideRequestId)
-                            //     .child("passenger_count")
-                            //     .set(count);
-
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  const ProgressDialog(
-                                message: "Please wait",
-                              ),
-                            );
-                            await getPlaceDirection(widget.rideDetails!.pickup!,
-                                widget.rideDetails!.dropoff!);
-                            Navigator.pop(context);
-                          } else if (status == "arrived") {
-                            status = "onride";
-                            String rideRequestId =
-                                widget.rideDetails!.ride_request_id!;
-                            newRequestsRef
-                                .child(rideRequestId)
-                                .child("status")
-                                .set(status);
-                            setState(() {
-                              btnTitle = "End Trip";
-                              btnColor = Colors.redAccent;
-                            });
-                            initTimer();
-                          } else if (status == "onride") {
-                            endTheTrip();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: btnColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(17),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                btnTitle,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Icon(
-                                Icons.directions_car,
-                                color: Colors.white,
-                                size: 26,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                // height: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 16,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.7, 0.7),
+                    )
+                  ],
+                ),
+                height: 350,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  child: Column(
+                    children: [
+                      Text(
+                        durationRide + " min",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: "Brand-Bold",
+                          color: Colors.deepPurple,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.rideDetails!.rider_name!,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontFamily: "Brand-Bold",
+                            ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(right: 10),
+                          //   child: Icon(Icons.call),
+                          // ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(
+                            "images/pickicon.png",
+                            height: 16,
+                            width: 16,
+                          ),
+                          SizedBox(
+                            width: 18,
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.rideDetails!.pickup_address!,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(
+                            "images/desticon.png",
+                            height: 16,
+                            width: 16,
+                          ),
+                          SizedBox(
+                            width: 18,
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.rideDetails!.dropoff_address!,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 18,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (status == "accepted") {
+                              status = "arrived";
+                              String rideRequestId =
+                                  widget.rideDetails!.ride_request_id!;
+                              newRequestsRef
+                                  .child(rideRequestId)
+                                  .child("status")
+                                  .set(status);
+                              setState(() {
+                                btnTitle = "Start Trip";
+                                btnColor = Colors.purpleAccent;
+                                // count++;
+                              });
+
+                              //passenger_count
+                              // newRequestsRef
+                              //     .child(rideRequestId)
+                              //     .child("passenger_count")
+                              //     .set(count);
+
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    const ProgressDialog(
+                                  message: "Please wait",
+                                ),
+                              );
+                              await getPlaceDirection(
+                                  widget.rideDetails!.pickup!,
+                                  widget.rideDetails!.dropoff!);
+                              Navigator.pop(context);
+                            } else if (status == "arrived") {
+                              status = "onride";
+                              String rideRequestId =
+                                  widget.rideDetails!.ride_request_id!;
+                              newRequestsRef
+                                  .child(rideRequestId)
+                                  .child("status")
+                                  .set(status);
+                              setState(() {
+                                btnTitle = "End Trip";
+                                btnColor = Colors.redAccent;
+                              });
+                              initTimer();
+                            } else if (status == "onride") {
+                              endTheTrip();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: btnColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(17),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  btnTitle,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.directions_car,
+                                  color: Colors.white,
+                                  size: 26,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -442,9 +534,7 @@ class _NewRideScreenState extends State<NewRideScreen> {
 
   void acceptRideRequest() {
     setState(() {
-      
-        count++;
-      
+      count++;
     });
     String rideRequestId = widget.rideDetails!.ride_request_id!;
     newRequestsRef.child(rideRequestId).child("status").set("accepted");
